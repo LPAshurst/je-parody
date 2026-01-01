@@ -1,0 +1,14 @@
+.profile-header {
+    display: flex;
+    width: 100vw;
+    border-bottom: .05rem solid #FFFFFF33;
+    padding-bottom: .5rem;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.user-button {
+    width: 10.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+}
