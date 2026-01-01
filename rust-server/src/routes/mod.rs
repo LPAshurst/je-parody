@@ -1,21 +1,33 @@
 mod users;
 
 use axum::{
-    routing::{get, post}, Router,
+    Router, http::{Method, header}, routing::{get, post}
 };
 use sqlx::{PgPool};
-use tower_http::cors::{Any, CorsLayer};
-
+use tower_http::cors::{CorsLayer};
+use tower_cookies::CookieManagerLayer;
 
 pub fn create_router(pool: PgPool) -> Router {
 
-    let cors_layer = CorsLayer::new().allow_origin(Any).allow_methods(Any).allow_headers(Any);
+    let origins = [
+        "http://192.168.1.249:5173".parse().unwrap(),
+        "http://192.168.1.248:5173".parse().unwrap(),
+        "http://api.example.com".parse().unwrap(),
+        "http://lorenzopi.local:5173".parse().unwrap()
+    ];
+
+    let cors_layer = CorsLayer::new().
+        allow_origin(origins)
+        .allow_credentials(true)
+        .allow_methods([Method::GET, Method::POST, Method::OPTIONS])
+        .allow_headers([header::CONTENT_TYPE, header::AUTHORIZATION]);
 
     Router::new()
     .route("/", get(|| async {"Hello World!"}))
     .nest("/user", users::routes())
-    .route("/post_example", post(|| async {"posting"}))
+    .route("/postExample", post(|| async {"posting"}))
     .with_state(pool)
     .layer(cors_layer)
+    .layer(CookieManagerLayer::new())
 
 }
