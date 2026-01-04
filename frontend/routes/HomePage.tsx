@@ -1,16 +1,19 @@
 import { useEffect, useState } from "react"
-import { SpotifyPlaylist, SpotifyProfile } from "../types";
 // import PlaylistIcon from "../ui/PlaylistIcon";
 
 import "../styles/Profile.css"
+import "../styles/HomePage.css"
 import CrossSiteHeader from "../ui/CrossSiteHeader";
+import type { Clue } from "../types/clue";
+import JeopardyBoard from "../ui/JeopardyBoard";
 
 export default function HomePage() {
-
+    
 
     // const [imgSrc, setImgSrc] = useState("");
     // const [username, setUsername] = useState("");
-    // const [playlists, setPlaylists] = useState<SpotifyPlaylist[]>([]);
+    const [clue, setClue] = useState<Clue>();
+    const [clues, setClues] = useState<Clue[]>([]);
 
     useEffect(() => {
 
@@ -32,37 +35,55 @@ export default function HomePage() {
         //     setPlaylists(result ?? []);
         // }
         // fetchPlaylists();
-    }, []);
+    }, []); 
 
+
+    function randomInt(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // example
+    
+
+
+    async function getRandomClue() {
+        // console.log("here")
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_CLUE_API}/random_question`);
+        if (res.ok) {
+
+        }
+        const data = await res.json();
+        console.log(data)
+        const n = randomInt(1, 49);
+        setClue(data.data[n])
+    }
+
+    async function getRandomBoard() {
+        // console.log("here")
+        const res = await fetch(`${import.meta.env.VITE_BACKEND_CLUE_API}/random_board`);
+        if (res.ok) {
+
+        }
+        const data = await res.json();
+        setClues(data.data);
+    }
 
     
     return (
         <>
             <CrossSiteHeader />
-            {/* <div>
-                <h1 style={{top: "0px"}}>Hello this is my profile</h1>
-                <h3> username: {username}</h3>
-                {imgSrc ? (
-                    <img src={imgSrc} alt="profile" style={{ width: 100, height: 100 }} />
-                ) : (
-                    <p>No image available</p>
-                )}
-                <h2>Playlists</h2>
-                <ul>
-                    {
-                    playlists.map((playlist: SpotifyPlaylist) => (
-                        <PlaylistIcon 
-                            key={playlist.id}
-                            url={playlist.images?.[0]?.url ?? ""} 
-                            playlistName={playlist.name} 
-                        />
-                    ))}
-                </ul>
-                
-            </div> */}
-        </>
-
+            <div>
+                <button onClick={getRandomClue}>IsraelGPT, generate me a jeopardy CLUE that IDF soldiers will love</button>
+                <button onClick={getRandomBoard}>IsraelGPT, generate me a jeopardy BOARD that IDF soldiers will love</button>
+            </div>
+            <div className="menu">
+                <h1 style={{top: "0px"}}>Generating.....</h1>
+                <h3> clue - {clue?.clue}</h3>
+                <h2> answer - {clue?.response}</h2>
+                <JeopardyBoard clues={clues}/>
+            </div>
             
+        </>
     )
 
 }
