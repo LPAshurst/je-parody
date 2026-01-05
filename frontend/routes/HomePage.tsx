@@ -14,6 +14,7 @@ export default function HomePage() {
     // const [username, setUsername] = useState("");
     const [clue, setClue] = useState<Clue>();
     const [clues, setClues] = useState<Clue[]>([]);
+    const [editing, setEditing] = useState<boolean>(true);
 
     useEffect(() => {
 
@@ -40,14 +41,9 @@ export default function HomePage() {
 
     function randomInt(min: number, max: number): number {
     return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-
-    // example
-    
-
+    }    
 
     async function getRandomClue() {
-        // console.log("here")
         const res = await fetch(`${import.meta.env.VITE_BACKEND_CLUE_API}/random_question`);
         if (res.ok) {
 
@@ -75,12 +71,10 @@ export default function HomePage() {
             <div>
                 <button onClick={getRandomClue}>IsraelGPT, generate me a jeopardy CLUE that IDF soldiers will love</button>
                 <button onClick={getRandomBoard}>IsraelGPT, generate me a jeopardy BOARD that IDF soldiers will love</button>
+                <button onClick={() => setEditing(!editing)}>IsraelGPT do the thing</button>
             </div>
             <div className="menu">
-                <h1 style={{top: "0px"}}>Generating.....</h1>
-                <h3> clue - {clue?.clue}</h3>
-                <h2> answer - {clue?.response}</h2>
-                <JeopardyBoard clues={clues}/>
+                <JeopardyBoard clues={clues} editing={editing}/>
             </div>
             
         </>
