@@ -76,6 +76,7 @@ export default function HomePage() {
             <div className="menu">
                 <JeopardyBoard clues={clues} editing={editing}/>
             </div>
+
             
         </>
     )
