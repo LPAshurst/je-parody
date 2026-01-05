@@ -46,7 +46,6 @@ pub async fn random_board() -> (StatusCode, Json<ExternalClueResponse>) {
     let mut external_api = env::var("EXTERNAL_CLUE_API").expect("Please set the extenal clue API. Should be something called cluebase");
     external_api.push_str("/random_board");
 
-    // clean this immediately after done testing
     let response = reqwest::get(external_api).await;
     
     match response {
