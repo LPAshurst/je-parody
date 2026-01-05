@@ -13,7 +13,7 @@ use sqlx::{Pool, Postgres};
 use tower_cookies::{Cookie, Cookies};
 use uuid::Uuid;
 
-pub fn routes() -> Router<Pool<Postgres>> {
+pub fn user_routes() -> Router<Pool<Postgres>> {
     Router::new()
         .route("/signup", post(signup))
         .route("/login", post(login))
@@ -22,6 +22,7 @@ pub fn routes() -> Router<Pool<Postgres>> {
 
 async fn confirm_session(State(pool): State<Pool<Postgres>>, cookie: Cookies) -> StatusCode {
     if let Some(session) = cookie.get("session_token") {
+        println!("{}", session.value());
         let session_token = match Uuid::parse_str(session.value()) {
             Ok(uuid) => uuid,
             Err(_) => return StatusCode::UNAUTHORIZED,
@@ -34,6 +35,7 @@ async fn confirm_session(State(pool): State<Pool<Postgres>>, cookie: Cookies) ->
         match token_in_db {
             Ok(_) => StatusCode::OK,
             Err(e) => {
+                println!("error in cookie thing");
                 println!("{e}");
                 StatusCode::NOT_FOUND
             }

@@ -48,7 +48,7 @@ createRoot(document.getElementById('root')!).render(
       <AuthProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<ProtectedRoute element={<App />} />} />
+            <Route path="/" element={<App />} />
             <Route path="home" element={<ProtectedRoute element={<HomePage />} />} />          
             <Route path="error" element={<ErrorPage />} />
             <Route path="*" element={<Navigate to="/error" replace />} />

@@ -14,14 +14,10 @@ export default function ProtectedRoute({ element }: ProtectedRouteProps) {
     return <div>Checking authentication...</div>; // could also be a spinner
   }
 
-  
   if (!isAuthenticated) {
-    return element;
-  } 
-
-  if (isAuthenticated && location.pathname === "/") {
-    return <Navigate to="/home" replace />;
+    return <Navigate to="/" replace />;
   }
-  return element;
 
+  return element;
 }
+

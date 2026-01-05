@@ -2,9 +2,21 @@ import { Music } from 'lucide-react';
 import Login from '../ui/Login';
 import { useState } from 'react';
 import Signup from '../ui/Signup';
+import { UseAuth } from '../context/AuthContext';
+import { Navigate } from 'react-router-dom';
 
 export default function ConcertDiscoveryApp () {
   const [modalType, setModalType] = useState<"login" | "signup" | null>(null);
+
+    const { isAuthenticated, loading } = UseAuth();
+
+    if (loading) {
+      return <div>Loading...</div>;
+    }
+
+    if (isAuthenticated) {
+      return <Navigate to="/home" replace />;
+    }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white">
@@ -24,8 +36,6 @@ export default function ConcertDiscoveryApp () {
 
         <Signup modalType={modalType} setModalType={setModalType} />
      
-
-        {/* Login Button */}
         
         <div className="text-center mb-12">
           <button

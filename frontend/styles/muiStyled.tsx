@@ -153,7 +153,7 @@ export const StyledMenu = styled(Menu)(({theme}) => ({
 const WidthSyncedPopper = (props: PopperProps) => {
   const { anchorEl, style, ...other } = props;
   if (anchorEl) {
-  console.log(anchorEl)
+  // console.log(anchorEl)
   }
   const width =
     anchorEl instanceof HTMLElement ? anchorEl.clientWidth : undefined;

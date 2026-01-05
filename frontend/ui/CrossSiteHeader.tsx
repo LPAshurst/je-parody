@@ -4,7 +4,6 @@ import { CircleUser, House, LogOut, Search, UserPen } from 'lucide-react';
 import { useNavigate, useLocation } from "react-router-dom";
 import { StyledMenu, UserButton, SearchComponent, SearchIconWrapper, StyledInputBase, StyledPopper } from "../styles/muiStyled";
 import "../styles/CrossSiteHeader.css"
-import { type SpotifyArtist } from "../types";
 
 export default function CrossSiteHeader() {
 
@@ -17,7 +16,7 @@ export default function CrossSiteHeader() {
     const [anchorSearchEl, setAnchorSearchEl] = useState<null | HTMLElement>(null);
 
     const [query, setQuery] = useState("");
-    const [artistList, setArtistList] = useState<SpotifyArtist[]>([]);
+    const [artistList, setArtistList] = useState<[]>([]);
     const [loading, setLoading] = useState(false);
 
     const openEl = Boolean(anchorEl);
@@ -100,7 +99,7 @@ export default function CrossSiteHeader() {
                 popupIcon={null}
                 options={artistList}
                 filterOptions={(x) => x}
-                getOptionLabel={(artist) => typeof artist === "string" ? artist : artist.name}
+                getOptionLabel={(artist) => typeof artist === "string" ? artist : artist}
                 loading={loading}
                 onInputChange={(_, q) => setQuery(q)}
                 renderInput={(params) => (
