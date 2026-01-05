@@ -1,0 +1,48 @@
+.board {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-auto-rows: min-content;
+  gap: 5px;
+  width: 70vw; 
+  height: 800px; 
+}
+
+.true-cell, .false-cell, .title {
+  width: 15vw;
+  height: 10vh;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.false-cell {
+  background-color: #00309e;
+  border: 2px solid #1e40af;
+  font-size: 250%;
+  color: #edae59;
+}
+
+.true-cell {
+  background-color: #00309e;
+  border: 2px solid #1e40af;
+  font-size: 100%;
+}
+
+.title {
+  background-color: #00309e;
+  border: 2px solid #172550;
+  font-size: 25px;
+  margin-bottom: 5px;
+  font-weight: bold;
+
+}
+
+.true-cell:hover {
+  background-color: #3b82f6;
+  transform: scale(1.02);
+}
+
