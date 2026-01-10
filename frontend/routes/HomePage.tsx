@@ -73,10 +73,7 @@ export default function HomePage() {
                 <button onClick={getRandomBoard}>IsraelGPT, generate me a jeopardy BOARD that IDF soldiers will love</button>
                 <button onClick={() => setEditing(!editing)}>IsraelGPT do the thing</button>
             </div>
-            <div className="menu">
-                <JeopardyBoard clues={clues} editing={editing}/>
-            </div>
-
+            <JeopardyBoard clues={clues} editing={editing}/>
             
         </>
     )
