@@ -34,9 +34,12 @@ export const DarkTextField = styled(TextField)({
   "& .MuiInputLabel-root.Mui-focused": {
     color: "#fff",
   },
-  "& .MuiInputLabel-asterisk": {
-    color: "red",
-  },
+  // "& .MuiInputLabel-asterisk": {
+  //   color: "red",
+  //   verticalAlign: "super",  
+  //   fontSize: "0.85em",    
+  //   marginLeft: "2px"       
+  // },
   width: "100%"
 });
 
@@ -61,7 +64,6 @@ export const LoginButton = styled(Button)(({theme}) => ({
     },
     color: "#EEF1F3",
     transition: "none", // get rid of this later if i want transitions
-    
     
 }));
 

@@ -4,6 +4,8 @@ import { useState } from 'react';
 import Signup from '../ui/Signup';
 import { UseAuth } from '../context/AuthContext';
 import { Navigate } from 'react-router-dom';
+import LoadingSpinner from "../ui/common/LoadingSpinner";
+
 
 export default function ConcertDiscoveryApp () {
   const [modalType, setModalType] = useState<"login" | "signup" | null>(null);
@@ -11,7 +13,7 @@ export default function ConcertDiscoveryApp () {
     const { isAuthenticated, loading } = UseAuth();
 
     if (loading) {
-      return <div>Loading...</div>;
+      return <LoadingSpinner />;
     }
 
     if (isAuthenticated) {

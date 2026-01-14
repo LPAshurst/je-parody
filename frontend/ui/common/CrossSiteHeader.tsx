@@ -2,8 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import {  Autocomplete, MenuItem, } from "@mui/material";
 import { CircleUser, House, LogOut, Search, UserPen } from 'lucide-react';
 import { useNavigate, useLocation } from "react-router-dom";
-import { StyledMenu, UserButton, SearchComponent, SearchIconWrapper, StyledInputBase, StyledPopper } from "../styles/muiStyled";
-import "../styles/CrossSiteHeader.css"
+import { StyledMenu, UserButton, SearchComponent, SearchIconWrapper, StyledInputBase, StyledPopper } from "../../styles/muiStyled";
+import "../../styles/CrossSiteHeader.css"
 
 export default function CrossSiteHeader() {
 
@@ -13,14 +13,14 @@ export default function CrossSiteHeader() {
     const headerEl = useRef<HTMLDivElement | null>(null);
     
     const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-    const [anchorSearchEl, setAnchorSearchEl] = useState<null | HTMLElement>(null);
+    // const [anchorSearchEl] = useState<null | HTMLElement>(null);
 
     const [query, setQuery] = useState("");
     const [artistList, setArtistList] = useState<[]>([]);
     const [loading, setLoading] = useState(false);
 
     const openEl = Boolean(anchorEl);
-    const openSearch = Boolean(anchorSearchEl);
+    // const _ = Boolean(anchorSearchEl);
 
     useEffect(() => {
 
@@ -67,12 +67,12 @@ export default function CrossSiteHeader() {
     };
 
     async function handleLogout() {
-        const res = await fetch(`${import.meta.env.VITE_BACKEND_AUTH_API}/logout`, {
-            method: "POST",
-            body: JSON.stringify({}),
-            credentials: "include",
-            headers: { "Content-Type": "application/json" },
-        })
+        // const _ = await fetch(`${import.meta.env.VITE_BACKEND_AUTH_API}/logout`, {
+        //     method: "POST",
+        //     body: JSON.stringify({}),
+        //     credentials: "include",
+        //     headers: { "Content-Type": "application/json" },
+        // })
         navigate("/");
     }
 

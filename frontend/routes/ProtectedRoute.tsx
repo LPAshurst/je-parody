@@ -1,6 +1,7 @@
 import { Navigate } from "react-router-dom";
 import { UseAuth } from "../context/AuthContext";
 import React from "react";
+import LoadingSpinner from "../ui/common/LoadingSpinner";
 
 type ProtectedRouteProps = {
   element: React.JSX.Element;
@@ -11,7 +12,7 @@ export default function ProtectedRoute({ element }: ProtectedRouteProps) {
 
 
   if (loading) {
-    return <div>Checking authentication...</div>; // could also be a spinner
+    return <LoadingSpinner />
   }
 
   if (!isAuthenticated) {
