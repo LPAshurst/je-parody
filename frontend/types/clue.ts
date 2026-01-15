@@ -1,24 +1,32 @@
 export const DEFAULT_VALS = [200, 400, 600, 800, 1000];
 
+export interface Board {
+  title: string,
+  clues: Clue[]
+}
 
 export interface Clue {
   id: number,
-  value: number;
+  clue_val: number;
   daily_double: boolean;
   round: "J!" | "DJ!";
   category: string;
   clue: string;
   response: string;
+  clue_is_picture: boolean;
+  position: number;
 }
 
 const emptyClue = (): Clue => ({
     id: 0,
-    value: 0,
+    clue_val: 0,
     daily_double: false,
     round: "J!",
     category: "",
     clue: "",
     response: "",
+    clue_is_picture: false,
+    position: 0
 });
 
 export function emptyBoard(): Clue[] {
@@ -30,8 +38,11 @@ export function emptyBoard(): Clue[] {
     const clueRow = new Array<Clue>;
     for (let col = 0; col < 6; col++ ) {
       const newClue = emptyClue();
-      newClue.value = DEFAULT_VALS[row]
+      newClue.clue_val = DEFAULT_VALS[row]
+      // i know this is ugly having both id and position, and i will try to solve it a better way soon, but the way my 
+      // database is setup kinda requires it to be like this right now
       newClue.id = id
+      newClue.position = id
       id += 1
       clueRow.push(newClue)
     } 

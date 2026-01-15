@@ -10,12 +10,14 @@ CREATE TABLE boards (
 CREATE TABLE board_clues (
     id SERIAL PRIMARY KEY,
     board_id INTEGER NOT NULL,  
+
+    clue_val INTEGER NOT NULL,
+    daily_double BOOLEAN,
+    round VARCHAR(3),
     category VARCHAR(255) NOT NULL,
     clue TEXT NOT NULL,
+    response TEXT NOT NULL,
     clue_is_picture BOOLEAN NOT NULL, 
-    answer TEXT NOT NULL,
-    clue_val INTEGER NOT NULL,
     position INTEGER NOT NULL,
-    created_at TIMESTAMP DEFAULT NOW(),
     FOREIGN KEY (board_id) REFERENCES boards(id) ON DELETE CASCADE
 );

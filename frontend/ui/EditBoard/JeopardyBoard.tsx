@@ -22,7 +22,7 @@ export default function JeopardyBoard({ initialClues }: JeopardyProps) {
         openTextEditor,
         closeTextEditor,
         updateClue,
-    } = useTextEditor(cluesToPopulate);
+    } = useTextEditor(cluesToPopulate, true, boardTitle);
 
     const categories = [...new Set(initialClues.map(clue => clue.category))]
        
@@ -53,7 +53,7 @@ export default function JeopardyBoard({ initialClues }: JeopardyProps) {
                     clues.map((clue, index) => (
                         <ClueCell 
                             clue={clue} 
-                            key={`${index}-${clue.value}`} 
+                            key={`${index}-${clue.clue_val}`} 
                             onClick={() => {
                             openTextEditor(clue)
                         }} />

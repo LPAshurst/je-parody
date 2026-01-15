@@ -1,5 +1,6 @@
+mod board;
+mod clues;
 mod users;
-mod questions;
 
 use axum::{
     Router,
@@ -27,7 +28,8 @@ pub fn create_router(pool: PgPool) -> Router {
     Router::new()
         .route("/", get(|| async { "Hello World!" }))
         .nest("/user", users::user_routes())
-        .nest("/clues", questions::question_routes())
+        .nest("/clues", clues::question_routes())
+        .nest("/boards", board::board_routes())
         .route("/postExample", post(|| async { "posting" }))
         .with_state(pool)
         .layer(cors_layer)

@@ -6,15 +6,15 @@ pub struct ExternalClueResponse {
     pub data: Vec<Clue>,
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, Debug)]
 pub struct Clue {
     pub id: i32,
-    pub game_id: i32,
-    pub value: i32,
+    pub clue_val: i32,
     pub daily_double: bool,
     pub round: String,
     pub category: String,
     pub clue: String,
     pub response: String,
+    pub clue_is_picture: bool,
+    pub position: i32,
 }
-

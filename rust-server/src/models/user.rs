@@ -26,6 +26,7 @@ pub struct UserSession {
     pub last_activity: Option<chrono::NaiveDateTime>,
 }
 
-// pub struct FrontEndUser {
-//     pub username: String,
-// }
+pub struct AuthenticatedUser {
+    pub id: i32,
+    pub username: String,
+}

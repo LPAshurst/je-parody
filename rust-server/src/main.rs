@@ -1,6 +1,8 @@
 mod database;
+mod extractors;
 mod models;
 mod routes;
+
 use tokio;
 
 #[tokio::main]

@@ -14,7 +14,7 @@ export function useClueState(clue: Clue, processedClue: any, processedResponse: 
         displayText = "Please fill out this clue!";
         textClass = "danger";
     } else if (!hasClue && !hasResponse) {
-        displayText = clue.value;
+        displayText = clue.clue_val;
     }
     
     return { 
