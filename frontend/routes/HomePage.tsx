@@ -8,7 +8,7 @@ export default function HomePage() {
     
     return (
         <>
-            <button onClick={() => {navigate("../edit/new-board")}}>press me to make a new board</button>
+            <button onClick={() => {navigate("../create")}}>press me to make a new board</button>
             <button onClick={() => {navigate("../boardList")}}>press me to edit an existing board from your account</button>
             <ul>
                 {}

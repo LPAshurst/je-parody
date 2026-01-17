@@ -17,6 +17,16 @@ export interface Clue {
   position: number;
 }
 
+export interface ExternalClue {
+    id: number;
+    game_id: number;
+    value: number;
+    round: string;
+    category: string;
+    clue: string;
+    response: string;
+}
+
 const emptyClue = (): Clue => ({
     id: 0,
     clue_val: 0,

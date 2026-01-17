@@ -51,8 +51,9 @@ createRoot(document.getElementById('root')!).render(
           <Routes>
             <Route path="/" element={<App />} />
             <Route path="home" element={<ProtectedRoute element={<HomePage />} />} />
-            <Route path="edit/:boardId" element={<ProtectedRoute element={<EditBoard />} />} />
-            <Route path="play/:boardId" element={<ProtectedRoute element={<EditBoard />} />} />    
+            <Route path="edit/:slug" element={<ProtectedRoute element={<EditBoard />} />} />
+            <Route path="play/:slug" element={<ProtectedRoute element={<EditBoard />} />} />    
+            <Route path="create" element={<ProtectedRoute element={<EditBoard />} />} />  
             <Route path="user/:userName" element={<ProtectedRoute element={<>yo... this is the user page</>} />} />      
             <Route path="error" element={<ErrorPage />} />
             <Route path="*" element={<Navigate to="/error" replace />} />

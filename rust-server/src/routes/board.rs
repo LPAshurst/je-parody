@@ -1,25 +1,62 @@
-use axum::extract::Json;
-use axum::{Router, extract::State, routing::post};
+use std::env;
+
+use axum::extract::{Json};
+use axum::{Router, extract::State, routing::post, routing::get};
 
 use reqwest::StatusCode;
 use sqlx::{Pool, Postgres};
 
-use crate::models::board::Board;
+use crate::models::board::{BoardFromFrontend, BoardToFrontend};
 use crate::models::user::AuthenticatedUser;
 
+use crate::misc::slug::generate_unique_slug;
+
 pub fn board_routes() -> Router<Pool<Postgres>> {
-    Router::new().route("/save_full_board", post(save_full_board))
+    Router::new()
+    .route("/save_full_board", post(save_full_board))
+    .route("/random_board", get(random_board))
 }
 
-pub async fn save_full_board(
-    AuthenticatedUser { id, username}: AuthenticatedUser,
+
+pub async fn random_board() -> (StatusCode, Json<BoardToFrontend>) {
+    let mut external_api = env::var("EXTERNAL_CLUE_API")
+        .expect("Please set the extenal clue API. Should be something called cluebase");
+    external_api.push_str("/random_board");
+
+    let response = reqwest::get(external_api).await;
+
+    match response {
+        Ok(response) => {
+            let board: BoardToFrontend = response.json().await.unwrap();
+
+            (StatusCode::ACCEPTED, Json(board))
+        }
+        Err(e) => (
+            StatusCode::NOT_FOUND,
+            Json(BoardToFrontend {
+                status: e.to_string(),
+                data: Vec::new(),
+            }),
+        ),
+    }
+}
+
+async fn save_full_board(
+    AuthenticatedUser { id, username: _}: AuthenticatedUser,
     State(pool): State<Pool<Postgres>>,
-    Json(board): Json<Board>,
+    Json(board): Json<BoardFromFrontend>,
 ) -> (StatusCode, Json<String>) {
+
+    let slug = match generate_unique_slug(&pool, id, &board.title).await {
+        Ok(s) => s,
+        Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json("Failed to generate slug".to_string()))
+    };
+
     let board_result = sqlx::query_scalar!(
-        "INSERT INTO boards (user_id, board_name) VALUES ($1, $2) RETURNING id",
+        "INSERT INTO boards (user_id, board_name, slug) VALUES ($1, $2, $3) RETURNING id",
         id,
-        board.title
+        board.title,
+        slug
     )
     .fetch_one(&pool)
     .await;
@@ -63,10 +100,8 @@ pub async fn save_full_board(
     .await;
 
     match clue_insert_result {
-        Ok(_) => return (StatusCode::OK, Json(username)),
+        Ok(_) => return (StatusCode::OK, Json(slug)),
         Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json("Failed to save clues".to_string()))
     }
 
-
-    
 }

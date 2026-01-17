@@ -2,6 +2,7 @@ mod database;
 mod extractors;
 mod models;
 mod routes;
+mod misc;
 
 use tokio;
 

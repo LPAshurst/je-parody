@@ -12,7 +12,6 @@ interface JeopardyProps {
 export default function JeopardyBoard({ initialClues }: JeopardyProps) {
 
     const [boardTitle, setBoardTitle] = useState("Enter title here");
-
     const cluesToPopulate = initialClues.length != 0 ? initialClues : emptyBoard();
 
     const {
@@ -22,7 +21,7 @@ export default function JeopardyBoard({ initialClues }: JeopardyProps) {
         openTextEditor,
         closeTextEditor,
         updateClue,
-    } = useTextEditor(cluesToPopulate, true, boardTitle);
+    } = useTextEditor(cluesToPopulate, boardTitle);
 
     const categories = [...new Set(initialClues.map(clue => clue.category))]
        
@@ -60,6 +59,7 @@ export default function JeopardyBoard({ initialClues }: JeopardyProps) {
                     ))
                 }
             </div>
+            <button>Save</button>
 
         </div>
     )

@@ -2,11 +2,16 @@
 import { useState } from 'react';
 import { type Clue, type Board } from '../types';
 import { useNavigate } from 'react-router-dom';
+import { useParams } from "react-router-dom";
 
-export default function useTextEditor(initialClues: Clue[], isNewBoard: boolean, boardTitle: string) {
+
+export default function useTextEditor(initialClues: Clue[], boardTitle: string) {
     const [clues, setClues] = useState<Clue[]>(initialClues);
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedClue, setSelectedClue] = useState<Clue | null>(null);
+
+    const navigate = useNavigate();
+    const { slug } = useParams();
 
     const openTextEditor = (clue: Clue) => {
         setSelectedClue(clue);
@@ -22,15 +27,16 @@ export default function useTextEditor(initialClues: Clue[], isNewBoard: boolean,
         const updatedClues = clues.map(c => 
             c.id === updatedClue.id ? updatedClue : c
         );
-        setClues(updatedClues);
 
-        if (isNewBoard) {
+        if (!slug) {
             // save entire board
 
             const board: Board = {
                 title: boardTitle,
                 clues: updatedClues 
             }
+
+            console.log(updatedClues)
         
             const res = await fetch(`${import.meta.env.VITE_BACKEND_BOARD_API}/save_full_board`, {
                 method: "POST",
@@ -42,15 +48,29 @@ export default function useTextEditor(initialClues: Clue[], isNewBoard: boolean,
                 console.log("didnt work :(")
                 return;
             } else {
+                setClues(updatedClues);
                 console.log("it did work tbh")
+                console.log(res.statusText)
             }
 
-            const data = await res.json();
-            console.log(data)
+            const updatedSlug = await res.json();
+            navigate(`/edit/${updatedSlug}`)
 
 
         } else {
-            // save specific clue
+            const res = await fetch(`${import.meta.env.VITE_BACKEND_CLUE_API}/update_clue/${slug}`, {
+                method: "PUT",
+                body: JSON.stringify(updatedClue),
+                credentials: "include",
+                headers: { "Content-Type": "application/json" },
+            })
+            if (!res.ok) {
+                console.log("didnt work :(")
+                return;
+            } else {
+                setClues(updatedClues);
+                console.log("it did work tbh")
+            }
         }
 
     };

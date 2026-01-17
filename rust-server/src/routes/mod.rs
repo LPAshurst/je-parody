@@ -22,7 +22,7 @@ pub fn create_router(pool: PgPool) -> Router {
     let cors_layer = CorsLayer::new()
         .allow_origin(origins)
         .allow_credentials(true)
-        .allow_methods([Method::GET, Method::POST, Method::OPTIONS])
+        .allow_methods([Method::GET, Method::POST, Method::OPTIONS, Method::PUT])
         .allow_headers([header::CONTENT_TYPE, header::AUTHORIZATION]);
 
     Router::new()

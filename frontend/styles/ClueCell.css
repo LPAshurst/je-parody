@@ -6,8 +6,9 @@ span {
   overflow: hidden;             
   text-overflow: ellipsis; 
   text-align: center;
-  word-wrap: break-word; 
-
+  overflow-wrap: break-word;
+  word-break: break-all;
+  hyphens: auto;
 }
 
 
@@ -98,4 +99,3 @@ span {
     line-clamp: 2;   
   }
 }
-
