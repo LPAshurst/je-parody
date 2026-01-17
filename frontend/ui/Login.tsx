@@ -61,7 +61,6 @@ export default function Login({modalType, setModalType}: LoginProps) {
                             <DarkTextField
                                 label="Username"
                                 variant="outlined"
-                                required
                                 fullWidth
                                 margin="normal"
                                 onChange={(e) => setUserName(e.target.value)}
@@ -71,7 +70,6 @@ export default function Login({modalType, setModalType}: LoginProps) {
                                 label="Password"
                                 type="password"
                                 variant="outlined"
-                                required
                                 fullWidth
                                 margin="normal"
                                 onChange={(e) => setPass(e.target.value)}

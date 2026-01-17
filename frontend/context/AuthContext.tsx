@@ -3,11 +3,13 @@ import { createContext, useContext, useEffect, useState } from "react";
 type AuthContextType = {
   isAuthenticated: boolean;
   loading: boolean;
+  setAuth: (value: boolean) => void;
 };
 
 const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
   loading: true,
+  setAuth: () => {}
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -36,7 +38,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, loading }}>
+    <AuthContext.Provider value={{ isAuthenticated, loading, setAuth: setIsAuthenticated}}>
       {children}
     </AuthContext.Provider>
   );

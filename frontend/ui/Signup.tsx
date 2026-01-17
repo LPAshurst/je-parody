@@ -4,6 +4,7 @@ import { DarkTextField, LoginButton } from "../styles/muiStyled";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Modal  from "@mui/material/Modal";
+import { UseAuth } from "../context/AuthContext";
 
 interface SignupProps {
     modalType: "login" | "signup" | null;
@@ -16,6 +17,7 @@ export default function Signup({modalType, setModalType}: SignupProps) {
     const [pass, setPass] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
+    const auth = UseAuth();
 
     async function handleSignup(e: React.FormEvent) {
         e.preventDefault();
@@ -26,11 +28,12 @@ export default function Signup({modalType, setModalType}: SignupProps) {
             headers: { "Content-Type": "application/json" },
         })
 
-        const data = await res.json()
-        if (!res.ok) {
-            setErrorMessage(data)
+        if (res.ok) {
+            auth.setAuth(true);
+            navigate("home")
         } else {
-            navigate("/home")
+            const data = await res.json()
+            setErrorMessage(data)
         }
     }
 
@@ -58,7 +61,6 @@ export default function Signup({modalType, setModalType}: SignupProps) {
                             <DarkTextField
                                 label="Username"
                                 variant="outlined"
-                                required
                                 fullWidth
                                 margin="normal"
                                 onChange={(e) => setUserName(e.target.value)}
@@ -69,7 +71,6 @@ export default function Signup({modalType, setModalType}: SignupProps) {
                                 label="Password"
                                 type="password"
                                 variant="outlined"
-                                required
                                 fullWidth
                                 margin="normal"
                                 onChange={(e) => setPass(e.target.value)}
