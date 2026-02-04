@@ -1,4 +1,4 @@
-import { Button, TextField, IconButton, Menu, InputBase, Popper, type PopperProps } from '@mui/material';
+import { Button, TextField, IconButton, Menu, Popper, type PopperProps } from '@mui/material';
 import { alpha, styled } from "@mui/material/styles";
 
 export const UserButton = styled(IconButton)({
@@ -91,7 +91,7 @@ export const SearchIconWrapper = styled('div')(({ theme }) => ({
 }));
 
 
-export const StyledInputBase = styled(TextField)(({ theme }) => ({
+export const StyledInputBase = styled(TextField)(() => ({
   color: 'inherit',
   "& fieldset": {
     border: "none"
@@ -106,6 +106,43 @@ export const StyledInputBase = styled(TextField)(({ theme }) => ({
     width: "30ch"
   },
 
+}));
+
+
+export const StyledEditCategory = styled(TextField)(({theme}) => ({
+  width: '100%',
+  marginBottom: '.1vh',
+  
+  '& .MuiInputBase-root': {
+    backgroundColor: '#00309e',
+    border: '2px solid #172550',
+    fontSize: 'calc(.5rem + .85vh + .4vw)',
+    fontWeight: 'bold',
+    color: 'white', 
+    padding: '5px',
+    height: '100%',
+    overflow: "hidden",
+
+  },
+  
+  '& .MuiInputBase-input': {
+    textAlign: 'center',
+    padding: 0,
+    resize: 'none',
+    overflow: "hidden"
+  },
+  
+  '& .MuiOutlinedInput-notchedOutline': {
+    border: 'none', 
+  },
+  
+  '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': {
+    border: 'none',
+  },
+  
+  '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
+    border: 'none', 
+  },
 }));
 
 

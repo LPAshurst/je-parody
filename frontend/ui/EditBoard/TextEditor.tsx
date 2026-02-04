@@ -1,9 +1,12 @@
 import ReactQuill from 'react-quill-new';
 import 'react-quill-new/dist/quill.snow.css';
 import { type Clue } from '../../types';
-import "../../styles/TextEditor.css";
+import "../../styles/EditBoard/TextEditor.css";
 import { useState, useEffect } from 'react';
 import { getQuillModules } from '../../utils/quillConfig';
+
+import processClueContent from "../../utils/processClueContent";
+
 
 interface TextEditorProps {
     selectedClue: Clue | null;
@@ -38,12 +41,15 @@ export default function TextEditor({ selectedClue, onSave, onClose }: TextEditor
     const handleSave = () => {
         if (!selectedClue) return;
         
+        const clue = processClueContent(clueText)
+        const answer = processClueContent(answerText)
+        
         const updatedClue: Clue = {
             ...selectedClue,
-            clue: clueText,
-            response: answerText
+            clue: clue.content,
+            response: answer.content
         };
-        
+
         onSave(updatedClue);
         onClose();
     };

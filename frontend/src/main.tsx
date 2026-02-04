@@ -8,6 +8,7 @@ import HomePage from '../routes/HomePage.tsx'
 import ErrorPage from '../routes/Error.tsx'
 import ProtectedRoute from '../routes/ProtectedRoute.tsx'
 import EditBoard from "../routes/EditBoard.tsx"
+import PlayBoard from "../routes/PlayBoard.tsx"
 
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
@@ -52,7 +53,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/" element={<App />} />
             <Route path="home" element={<ProtectedRoute element={<HomePage />} />} />
             <Route path="edit/:slug" element={<ProtectedRoute element={<EditBoard />} />} />
-            <Route path="play/:slug" element={<ProtectedRoute element={<EditBoard />} />} />    
+            <Route path="play/:slug" element={<ProtectedRoute element={<PlayBoard />} />} />    
             <Route path="create" element={<ProtectedRoute element={<EditBoard />} />} />  
             <Route path="user/:userName" element={<ProtectedRoute element={<>yo... this is the user page</>} />} />      
             <Route path="error" element={<ErrorPage />} />

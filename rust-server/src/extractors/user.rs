@@ -16,8 +16,6 @@ where
         state: &S,
     ) -> Result<Self, Self::Rejection> {
 
-        println!("I got to this fpr extractor");
-
         let pool = Pool::<Postgres>::from_ref(state);
 
         let cookie = tower_cookies::Cookies::from_request_parts(parts, state).await?;

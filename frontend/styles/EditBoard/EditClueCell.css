@@ -1,4 +1,4 @@
-span {
+/* span {
   display: -webkit-box; 
   -webkit-line-clamp: 4;    
   line-clamp: 4;    
@@ -6,11 +6,18 @@ span {
   overflow: hidden;             
   text-overflow: ellipsis; 
   text-align: center;
-  overflow-wrap: break-word;
-  word-break: break-all;
-  hyphens: auto;
-}
+} */
 
+.text-content {
+  display: -webkit-box; 
+  -webkit-line-clamp: 4;    
+  line-clamp: 4;    
+  -webkit-box-orient: vertical; 
+  overflow: hidden;             
+  text-overflow: ellipsis; 
+  text-align: center;
+  word-break: break-word;  
+}
 
 .cell-wrapping {
   user-select: none;
@@ -38,15 +45,15 @@ span {
   color: rgba(255, 255, 255, 0.2);
 }
 
-.hoverable:hover > .cell {
+.hoverable:hover > .edit-cell {
   transform: rotateY(180deg) ;
   transition: transform .5s;
 }
 
-.cell {
+.edit-cell {
   width: 100%;
   height: 100%;
-  transition: transform .25s;
+  transition: transform .15s;
   transform-style: preserve-3d;
   box-sizing: border-box;
 }
@@ -74,7 +81,7 @@ span {
 
   font-size: larger;
   font-weight: bold;
-  border: .2rem solid yellow;
+  border: .3rem solid yellow;
 }
 
 
@@ -83,19 +90,30 @@ span {
     font-size: medium;
   }
 
-  span {
+  .text-content  {
     -webkit-line-clamp: 3;
     line-clamp: 3;    
   }
 }
 
-@media (max-height: 600px) {
+@media (max-height: 650px) {
   .cell-back > span {
     font-size: medium;
   }
 
-  span {
+  .text-content  {
     -webkit-line-clamp: 2;
     line-clamp: 2;   
+  }
+}
+
+@media (max-height: 300px) {
+  .cell-back > span {
+    font-size: smaller;
+  }
+
+  .text-content  {
+    -webkit-line-clamp: 1;
+    line-clamp: 1;   
   }
 }
