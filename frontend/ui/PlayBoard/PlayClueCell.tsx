@@ -8,18 +8,17 @@ interface ClueCellProps {
 }
 
 export default function ClueCell({ clue }: ClueCellProps) {
-
     const [isOpen, setIsOpen] = useState(false);
-    console.log(isOpen)
+
     
     return (
         <>
-            {/* { && ( */}
-            <ExpandingQuestionModal
-                onClose={() => setIsOpen(false)}
-                clue={clue}
-            />
-            {/* )} */}
+            {isOpen && (
+                <ExpandingQuestionModal
+                    onClose={() => setIsOpen(false)}
+                    clue={clue}
+                />
+            )}
             <div className="play-cell" onClick={() => setIsOpen(true)}>
                 <span className="clue-value">${clue.clue_val}</span>     
             </div>

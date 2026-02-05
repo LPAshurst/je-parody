@@ -29,7 +29,6 @@ function MediaOrText({
             />
         );
     }
-    console.log(processedContent)
     return (
         <span className="text-content">
             {fallbackText ?? processedContent.content.toString()}

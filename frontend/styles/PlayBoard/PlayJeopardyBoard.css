@@ -2,6 +2,7 @@
 /* Actual board styling */
 
 .play-board {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   grid-template-rows: repeat(6, 1fr); 
@@ -10,6 +11,8 @@
   height: 90vh; 
   background-color: black;
   padding: .35rem; 
+  z-index: 1;
+  margin: 0 auto;
 }
 
 /* kinda want it to be really general because everything (title, answer text and what not uses span) */
