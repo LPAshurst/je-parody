@@ -1,29 +1,23 @@
-/* Total menu screen styling */
-
-.menu {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    height: 100%;
-    width: 100%;
-}
 
 /* Actual board styling */
 
-.board {
+.play-board {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   grid-template-rows: repeat(6, 1fr); 
   gap: .35rem;
-  width: 90vw; 
-  height: 70vh; 
+  width: 98vw; 
+  height: 90vh; 
   background-color: black;
   padding: .35rem; 
+  z-index: 1;
+  margin: 0 auto;
 }
 
+/* kinda want it to be really general because everything (title, answer text and what not uses span) */
 
-.title {
+.play-category {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -32,13 +26,12 @@
   padding: 5px; 
   box-sizing: border-box;
   width: 100%;
-  transform-style: preserve-3d;
 }
 
 /* kinda want it to be really general because everything (title, answer text and what not uses span) */
 
 
-.title {
+.play-category {
   background-color: #00309e;
   border: 2px solid #172550;
   /* 
@@ -49,4 +42,5 @@
   margin-bottom: .1vh;
   font-weight: bold;
 }
+
 

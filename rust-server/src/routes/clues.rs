@@ -8,7 +8,7 @@ use reqwest::StatusCode;
 use sqlx::{Pool, Postgres};
 
 use crate::models::clues::{Clue};
-use crate::models::board::BoardToFrontend;
+use crate::models::board::{ExternalBoard};
 use crate::models::user::AuthenticatedUser;
 
 pub fn question_routes() -> Router<Pool<Postgres>> {
@@ -52,7 +52,7 @@ async fn update_clue(
 
 }
 
-pub async fn get_random_question() -> (StatusCode, Json<BoardToFrontend>) {
+pub async fn get_random_question() -> (StatusCode, Json<ExternalBoard>) {
     let mut external_api = env::var("EXTERNAL_CLUE_API")
         .expect("Please set the extenal clue API. Should be something called cluebase");
     external_api.push_str("/clues?limit=60");
@@ -62,13 +62,13 @@ pub async fn get_random_question() -> (StatusCode, Json<BoardToFrontend>) {
 
     match result {
         Ok(response) => {
-            let clues: BoardToFrontend = response.json().await.unwrap();
+            let clues: ExternalBoard = response.json().await.unwrap();
 
             (StatusCode::ACCEPTED, Json(clues))
         }
         Err(e) => (
             StatusCode::NOT_FOUND,
-            Json(BoardToFrontend {
+            Json(ExternalBoard {
                 status: e.to_string(),
                 // this is so incredibly stupid i dont know im just gonna do this for now tho
                 data: Vec::new()

@@ -2,6 +2,7 @@ export const DEFAULT_VALS = [200, 400, 600, 800, 1000];
 
 export interface Board {
   title: string,
+  slug: string,
   clues: Clue[]
 }
 

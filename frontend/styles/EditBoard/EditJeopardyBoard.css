@@ -1,0 +1,67 @@
+/* Total menu screen styling */
+
+.menu {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    width: 100%;
+}
+
+.edit-page {
+    display: flex;
+    flex-direction: column;
+    width: 100vw;
+    height: 100vh;
+    align-items: center;
+}
+
+/* Actual board styling */
+
+.edit-board {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-template-rows: repeat(6, 1fr); 
+  gap: .35rem;
+  width: 90vw; 
+  height: 75vh; 
+  background-color: black;
+  padding: .35rem; 
+}
+
+.title {
+  width: 80%;
+  text-align: center;
+  background-color: #242424;
+  font-size: xx-large;
+  border: none;
+  height: 5rem;
+}
+
+.title:hover {
+  background-color: #2B2A33;
+}
+
+.title:focus {
+  outline: none;
+  background-color: rgb(211, 191, 191);
+  color: black;
+
+}
+
+@media (max-height: 800px) {
+  .title {
+    font-size: x-large;
+  }
+}
+
+.edit-jopardy-footer {
+  display: flex;
+}
+
+.board-isSaved {
+  color: green;
+}
+.board-notSaved {
+  color: red;
+}

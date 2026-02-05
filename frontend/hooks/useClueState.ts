@@ -1,4 +1,3 @@
-// hooks/useClueState.ts
 import { type Clue } from "../types";
 
 export function useClueState(clue: Clue, processedClue: any, processedResponse: any) {

@@ -33,11 +33,10 @@ export default function useTextEditor(initialClues: Clue[], boardTitle: string) 
 
             const board: Board = {
                 title: boardTitle,
-                clues: updatedClues 
+                clues: updatedClues,
+                slug: "" // send dummy slug for now. the server will make one for us anyway
             }
-
-            console.log(updatedClues)
-        
+                    
             const res = await fetch(`${import.meta.env.VITE_BACKEND_BOARD_API}/save_full_board`, {
                 method: "POST",
                 body: JSON.stringify(board),
@@ -82,5 +81,6 @@ export default function useTextEditor(initialClues: Clue[], boardTitle: string) 
         openTextEditor,
         closeTextEditor,
         updateClue,
+        setClues
     };
 }

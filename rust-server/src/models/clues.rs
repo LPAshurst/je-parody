@@ -1,4 +1,5 @@
 use serde::{Deserialize, Serialize};
+use sqlx::FromRow;
 
 #[derive(Serialize, Deserialize)]
 pub struct ExternalClue {
@@ -12,7 +13,7 @@ pub struct ExternalClue {
 
 }
 
-#[derive(Serialize, Deserialize, Clone)]
+#[derive(Serialize, Deserialize, Clone, FromRow)]
 pub struct Clue {
     pub id: i32,
     pub clue_val: i32,

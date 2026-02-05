@@ -4,7 +4,7 @@ CREATE TABLE boards (
     user_id INTEGER NOT NULL,
     board_name VARCHAR(255) NOT NULL,
     slug VARCHAR(255) NOT NULL,
-    is_public BOOLEAN DEFAULT true, --FIXME, this should not be true when doing actual tests
+    is_public BOOLEAN DEFAULT true NOT NULL, --FIXME, this should not be true when doing actual tests
     created_at TIMESTAMP DEFAULT NOW(),
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
@@ -19,7 +19,7 @@ CREATE TABLE board_clues (
     board_id INTEGER NOT NULL,  
 
     clue_val INTEGER NOT NULL,
-    daily_double BOOLEAN,
+    daily_double BOOLEAN NOT NULL,
     round VARCHAR(3),
     category VARCHAR(255) NOT NULL,
     clue TEXT NOT NULL,

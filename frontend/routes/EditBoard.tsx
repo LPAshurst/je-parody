@@ -1,19 +1,42 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
+// import CrossSiteHeader from "../ui/common/CrossSiteHeader";
 
-import "../styles/HomePage.css"
-import CrossSiteHeader from "../ui/common/CrossSiteHeader";
-import type { Clue, ExternalClue } from "../types/clue";
-import JeopardyBoard from "../ui/EditBoard/JeopardyBoard";
+import type { Board, Clue, ExternalClue } from "../types/clue";
+import JeopardyBoard from "../ui/EditBoard/EditJeopardyBoard";
+import { useParams } from "react-router-dom";
+import "../styles/EditBoard/BoardToolbar.css"
 
 export default function EditBoard() {
     
     const [clues, setClues] = useState<Clue[]>([]);
-    const [editing, setEditing] = useState<boolean>(true);
     const [boardKey, setBoardKey] = useState(0);
+    const [boardTitle, setBoardTitle] = useState(""); 
+    const [isSaved, setSaved] = useState(true);
 
-    // function randomInt(min: number, max: number): number {
-    // return Math.floor(Math.random() * (max - min + 1)) + min;
-    // }    
+    const { slug } = useParams();
+
+    useEffect(() => {
+
+        const getBoardData = async () => {
+
+            const res = await fetch(
+                `${import.meta.env.VITE_BACKEND_BOARD_API}/request_board/${slug}`, 
+                { credentials: "include" }
+            )
+            if (!res.ok) {
+                return;
+            } else {
+                const data: Board = await res.json();
+                setBoardTitle(data.title)
+                setClues(data.clues);
+                setBoardKey(prev => prev + 1); // also needed to refresh state
+            }
+
+        }
+
+        getBoardData()
+
+    }, [])
 
     async function getRandomBoard() {
         const res = await fetch(`${import.meta.env.VITE_BACKEND_BOARD_API}/random_board`);
@@ -41,18 +64,50 @@ export default function EditBoard() {
 
         setClues(clues);
         setBoardKey(prev => prev + 1); // This is used to force the remount of the clues
+        setSaved(false);
     }
     
     return (
-        <>
-            <CrossSiteHeader />
-            <div>
-                <button onClick={getRandomBoard}>generate me a jeopardy BOARD that people will love</button>
-                <button onClick={() => setEditing(!editing)}>do the thing</button>
+        <div className="edit-page">
+            <input 
+                className="title" 
+                type="text"
+                value={boardTitle}
+                onChange={e => {setSaved(false); setBoardTitle(e.target.value)}} 
+                placeholder={"Enter title here"} 
+            />
+            <JeopardyBoard 
+                boardTitle={boardTitle} 
+                setBoardTitle={setBoardTitle} 
+                initialClues={clues} 
+                key={boardKey} 
+                isSaved={isSaved} 
+                setSaved={setSaved}
+            />
+
+             {/* Board Toolbar */}
+            <div className="board-toolbar">
+                <button 
+                    onClick={getRandomBoard}
+                    className="btn-generate"
+                >
+                    Generate Random Board
+                </button>
+                
+                <div className="toolbar-right">
+                    <div className={`save-status ${isSaved ? 'saved' : 'unsaved'}`}>
+                        {isSaved ? '✅ Saved' : '● Unsaved changes'}
+                    </div>
+                    <button 
+                        onClick={() => {}} // need to update so we can actually save the full board when changing things
+                        className="btn-save"
+                        disabled={isSaved}
+                    >
+                        Save Board
+                    </button>
+                </div>
             </div>
-            <JeopardyBoard initialClues={clues} key={boardKey}/>
-            
-        </>
+        </div>
     )
 
 }

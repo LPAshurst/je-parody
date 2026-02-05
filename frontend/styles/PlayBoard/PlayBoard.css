@@ -1,0 +1,11 @@
+.play-area {
+    /* display: flex; */
+    width: 100%;
+    position: absolute;
+    /* align-items: center;
+    flex-direction: column; */
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}

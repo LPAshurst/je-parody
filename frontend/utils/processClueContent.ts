@@ -1,12 +1,10 @@
 import DOMPurify from 'dompurify';
 
-export default function ProcessClueContent(html: string): { 
+export default function processClueContent(html: string): { 
     hasMedia: boolean; 
     content: string 
 } {
-
-    console.log(html)
-
+    
     const clean = DOMPurify.sanitize(html, {
         ALLOWED_TAGS: ['img', 'video', 'source'],
         ALLOWED_ATTR: ['src', 'alt', 'controls', 'width', 'height', 'type']

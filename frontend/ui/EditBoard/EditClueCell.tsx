@@ -1,7 +1,7 @@
 import { type Clue } from "../../types";
-import "../../styles/ClueCell.css";
+import "../../styles/EditBoard/EditClueCell.css";
 import { useClueState } from "../../hooks/useClueState";
-import ProcessClueContent from "../../utils/processClueContent";
+import processClueContent from "../../utils/processClueContent";
 import { useMemo } from "react";
 
 interface ClueCellProps {
@@ -12,7 +12,6 @@ interface ClueCellProps {
 function MediaOrText({ 
     processedContent, 
     fallbackText, 
-    className = "" 
 }: { 
     processedContent: 
     {
@@ -31,7 +30,7 @@ function MediaOrText({
         );
     }
     return (
-        <span className={className}>
+        <span className="text-content">
             {fallbackText ?? processedContent.content.toString()}
         </span>
     );
@@ -39,8 +38,8 @@ function MediaOrText({
 
 export default function ClueCell({ clue, onClick }: ClueCellProps) {
     
-    const processedClue = useMemo(() => ProcessClueContent(clue.clue), [clue.clue]);
-    const processedResponse = useMemo(() => ProcessClueContent(clue.response), [clue.response]);
+    const processedClue = useMemo(() => processClueContent(clue.clue), [clue.clue]);
+    const processedResponse = useMemo(() => processClueContent(clue.response), [clue.response]);
     
     const { hoverable, displayText, textClass } = useClueState(clue, processedClue, processedResponse);
     
@@ -48,12 +47,11 @@ export default function ClueCell({ clue, onClick }: ClueCellProps) {
 
     return (
         <div className={`${hoverClass} cell-wrapping`} onClick={onClick}>
-            <div className="cell">
+            <div className="edit-cell">
                 <div className={`${hoverClass} cell-front`}>
                     <MediaOrText 
                         processedContent={processedClue} 
                         fallbackText={displayText}
-                        className={textClass}
                     />
                 </div>
                 <div className="cell-back">

@@ -10,6 +10,10 @@ use axum::{
 use sqlx::PgPool;
 use tower_cookies::CookieManagerLayer;
 use tower_http::cors::CorsLayer;
+use socketioxide::{
+    SocketIo,
+};
+// use crate::socket::handlers::on_game_connect;
 
 pub fn create_router(pool: PgPool) -> Router {
     let origins = [
@@ -25,6 +29,11 @@ pub fn create_router(pool: PgPool) -> Router {
         .allow_methods([Method::GET, Method::POST, Method::OPTIONS, Method::PUT])
         .allow_headers([header::CONTENT_TYPE, header::AUTHORIZATION]);
 
+    let (socket_layer, io) = SocketIo::new_layer();
+
+    // io.ns("/game", on_game_connect);
+
+
     Router::new()
         .route("/", get(|| async { "Hello World!" }))
         .nest("/user", users::user_routes())
@@ -34,4 +43,5 @@ pub fn create_router(pool: PgPool) -> Router {
         .with_state(pool)
         .layer(cors_layer)
         .layer(CookieManagerLayer::new())
+        .layer(socket_layer)
 }

@@ -3,6 +3,7 @@ mod extractors;
 mod models;
 mod routes;
 mod misc;
+mod socket;
 
 use tokio;
 
