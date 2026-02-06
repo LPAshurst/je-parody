@@ -13,8 +13,8 @@ interface JeopardyProps {
     setSaved: (saveState: boolean) => void;
     isSaved: boolean;
 }
-
-export default function JeopardyBoard({ initialClues, boardTitle, setBoardTitle, setSaved, isSaved }: JeopardyProps) {
+// FIX ME go through and add logic for if isSave and SetBoardTitle
+export default function JeopardyBoard({ initialClues, boardTitle,  setSaved}: JeopardyProps) {
 
     const cluesToPopulate = initialClues.length != 0 ? initialClues : emptyBoard();
 

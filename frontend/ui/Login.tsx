@@ -31,7 +31,7 @@ export default function Login({modalType, setModalType}: LoginProps) {
         if (!res.ok) {
             setErrorMessage(data)
         } else {
-            navigate("/home")
+            navigate("home")
         }
     }
 

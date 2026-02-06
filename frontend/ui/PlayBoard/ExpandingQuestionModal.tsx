@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "../../styles/PlayBoard/ExpandingQuestionModal.css"
-import type { Clue } from "../../types";
+import type { PlayClue } from "../../types";
 
 interface ExpandingQuestionModalProps {
     onClose: () => void;
-    clue: Clue;
+    clue: PlayClue;
 }
 
 export default function ExpandingQuestionModal({onClose, clue}: ExpandingQuestionModalProps) {
@@ -43,7 +43,7 @@ export default function ExpandingQuestionModal({onClose, clue}: ExpandingQuestio
                 <div className="header-title">{clue.category} for {clue.clue_val}</div>
                 <div className="header-options">ryan</div>
             </header>
-            <div className="modal-content">
+            <div className="play-modal-content">
                 <span>{clue.clue}</span>
             </div>
         </div>

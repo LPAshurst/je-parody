@@ -1,46 +1,55 @@
 import "../styles/PlayBoard/PlayBoard.css"
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import type { Board, Clue } from "../types";
+import type { PlayClue, Game, Player } from "../types";
 import JeopardyBoard from "../ui/PlayBoard/PlayJeopardyBoard";
 import PlayBoardFooter from "../ui/PlayBoard/PlayBoardFooter"
+import { socket, rejoinRoom } from "../src/socket";
 
 export default function PlayBoard() {
-
-    const { slug } = useParams();
-
-    const [clues, setClues] = useState<Clue[]>([]);
     
+    const { room } = useParams();
+    console.log(room)
+    const [clues, setClues] = useState<PlayClue[]>([]);
+    const [players, setPlayers] = useState<Record<string, Player>>({});
+
+    function handleClueClick(clue: PlayClue) {
+        socket.emit("select-clue", {
+            room_id: room,
+            position: clue.position
+        });
+    }
 
     useEffect(() => {
 
-        const getBoardData = async () => {
-
-            const res = await fetch(
-                `${import.meta.env.VITE_BACKEND_BOARD_API}/request_board/${slug}`, 
-                { credentials: "include" }
-            )
-            if (!res.ok) {
-                console.log("didnt work :(")
-                console.log(res.statusText)
-                return;
-            } else {
-                const data: Board = await res.json();
-
-                setClues(data.clues);
-            }
-
+        if (!room) {
+            console.log("No room parameter");
+            return;
         }
+            
+        rejoinRoom(room);
 
-        getBoardData()
+        socket.emit("ask-for-state", room)
 
+        socket.on("get-state", (game: Game) => {
+            console.log(game)
+            setClues(game.clues)
+            setPlayers(game.players)
+        })
+
+        return () => {
+            socket.off("get-state");
+        };
+    
     }, [])
 
     return (
-        <div className="play-area">
-            <JeopardyBoard clues={clues} />
-            <PlayBoardFooter></PlayBoardFooter>
-        </div>
+        <>
+            <div className="play-area">
+                <JeopardyBoard clues={clues} handleClueClick={handleClueClick} />
+                <PlayBoardFooter players={players}/>
+            </div>
+        </>
     )
 
 }

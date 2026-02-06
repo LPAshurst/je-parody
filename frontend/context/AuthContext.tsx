@@ -3,18 +3,21 @@ import { createContext, useContext, useEffect, useState } from "react";
 type AuthContextType = {
   isAuthenticated: boolean;
   loading: boolean;
+  userName: string;
   setAuth: (value: boolean) => void;
 };
 
 const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
   loading: true,
+  userName: "",
   setAuth: () => {}
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [userName, setUserName] = useState("");
 
   useEffect(() => {
 
@@ -24,6 +27,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           `${import.meta.env.VITE_BACKEND_AUTH_API}/confirm_session`,
           { credentials: "include" }
         );
+        const user = await data.json()
+        setUserName(user)
         if (data.ok) {
           setIsAuthenticated(true);
         }
@@ -38,7 +43,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, loading, setAuth: setIsAuthenticated}}>
+    <AuthContext.Provider value={{ isAuthenticated, loading, userName, setAuth: setIsAuthenticated}}>
       {children}
     </AuthContext.Provider>
   );

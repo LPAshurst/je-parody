@@ -6,6 +6,13 @@ export default defineConfig({
   plugins: [react()],
   server: 
   {
+    proxy: {
+      "/socket.io": {
+        target: 'http://localhost:3000',
+        ws: true,
+        changeOrigin: true
+      }
+    },
     host: true,
     allowedHosts: ["lorenzopi.local"]
   }

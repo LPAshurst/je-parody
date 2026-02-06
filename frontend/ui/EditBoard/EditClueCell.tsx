@@ -30,9 +30,9 @@ function MediaOrText({
         );
     }
     return (
-        <span className="text-content">
+        <div className="text-content">
             {fallbackText ?? processedContent.content.toString()}
-        </span>
+        </div>
     );
 }
 
@@ -41,7 +41,7 @@ export default function ClueCell({ clue, onClick }: ClueCellProps) {
     const processedClue = useMemo(() => processClueContent(clue.clue), [clue.clue]);
     const processedResponse = useMemo(() => processClueContent(clue.response), [clue.response]);
     
-    const { hoverable, displayText, textClass } = useClueState(clue, processedClue, processedResponse);
+    const { hoverable, displayText } = useClueState(clue, processedClue, processedResponse);
     
     const hoverClass = hoverable ? "hoverable" : "not-hoverable";
 
