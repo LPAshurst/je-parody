@@ -6,6 +6,20 @@ export interface Board {
   clues: Clue[]
 }
 
+export interface Game {
+  code: string;
+  players: Record<string, Player>;
+  current_clue: string | null;
+  active_player: string | null;
+  buzzer_locked: boolean;
+  clues: PlayClue[];
+}
+
+export interface Player {
+  score: number;
+  user_name: string;
+}
+
 export interface Clue {
   id: number,
   clue_val: number;
@@ -16,6 +30,15 @@ export interface Clue {
   response: string;
   clue_is_picture: boolean;
   position: number;
+}
+
+export interface PlayClue {
+  position: number;
+  clue: string;
+  response: string;
+  category: string;
+  answered: boolean;
+  clue_val: number;
 }
 
 export interface ExternalClue {

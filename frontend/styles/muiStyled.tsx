@@ -109,7 +109,7 @@ export const StyledInputBase = styled(TextField)(() => ({
 }));
 
 
-export const StyledEditCategory = styled(TextField)(({theme}) => ({
+export const StyledEditCategory = styled(TextField)(() => ({
   width: '100%',
   marginBottom: '.1vh',
   
@@ -192,18 +192,15 @@ export const StyledMenu = styled(Menu)(({theme}) => ({
 const WidthSyncedPopper = (props: PopperProps) => {
   const { anchorEl, style, ...other } = props;
   if (anchorEl) {
-  // console.log(anchorEl)
-  }
-  const width =
-    anchorEl instanceof HTMLElement ? anchorEl.clientWidth : undefined;
 
-  return (
-    <Popper
-      {...other}
-      anchorEl={anchorEl}
-      style={{ ...style, width: "60ch" }}
-    />
-  );
+    return (
+      <Popper
+        {...other}
+        anchorEl={anchorEl}
+        style={{ ...style, width: "60ch" }}
+      />
+    );
+  }
 };
 
 export const StyledPopper = styled(WidthSyncedPopper)(({ theme }) => ({

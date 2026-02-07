@@ -1,48 +1,50 @@
-import { type Clue, emptyBoard } from "../../types";
+import { type Clue } from "../../types";
 import "../../styles/EditBoard/EditJeopardyBoard.css"
 import ClueCell from "./EditClueCell";
 import TextEditorModal from "./TextEditorModal"
-import useTextEditor from "../../hooks/useTextEditor";
 import {StyledEditCategory} from "../../styles/muiStyled"
 import { useState } from "react";
 
 interface JeopardyProps {
-    initialClues: Clue[];
-    boardTitle: string;              
-    setBoardTitle: (title: string) => void; 
+    clues: Clue[];
+    setClues: (clues: Clue[]) => void;
+    modalOpen: boolean;
+    selectedClue: Clue | null;
+    openTextEditor: (clue: Clue) => void;
+    closeTextEditor: () => void;
+    updateClue: (clue: Clue) => void;
     setSaved: (saveState: boolean) => void;
-    isSaved: boolean;
 }
 
-export default function JeopardyBoard({ initialClues, boardTitle, setBoardTitle, setSaved, isSaved }: JeopardyProps) {
+// FIX ME go through and add logic for if isSave and SetBoardTitle
+export default function JeopardyBoard({ 
+    clues, 
+    setClues,
+    modalOpen,
+    selectedClue,
+    openTextEditor,
+    closeTextEditor,
+    updateClue,
+    setSaved
+}: JeopardyProps) {
 
-    const cluesToPopulate = initialClues.length != 0 ? initialClues : emptyBoard();
 
-    const {
-        clues,
-        modalOpen,
-        selectedClue,
-        openTextEditor,
-        closeTextEditor,
-        updateClue,
-        setClues
-    } = useTextEditor(cluesToPopulate, boardTitle);
-
-    const categories = [...new Set(initialClues.map(clue => clue.category))]
+    const categories = [...new Set(clues.map(clue => clue.category))]
        
-    const fixedCategories = categories.length > 0 ? categories : Array(6).fill("Enter title here")
+    const fixedCategories = categories.length !== 1 ? categories : Array(6).fill("Enter title here")
 
     const [displayCategories, setDisplayCategories] = useState(fixedCategories);
 
 
-    function updateCategory(cat: string, id: number) {
+    function updateCategory(cat: string, col: number) {
         const newCategories = [...displayCategories];
-        newCategories[id] = cat;
+        newCategories[col] = cat;
         setDisplayCategories(newCategories);
 
         const updatedClues: Clue[] = clues.map((c, ix) => 
             {
-                if (id == ix % clues.length){
+                if (col == ix % 6){
+                    console.log()
                     c.category = cat;
                 }
                 return c

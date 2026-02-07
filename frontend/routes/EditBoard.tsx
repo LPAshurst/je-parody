@@ -1,45 +1,66 @@
 import { useEffect, useState } from "react"
 // import CrossSiteHeader from "../ui/common/CrossSiteHeader";
 
-import type { Board, Clue, ExternalClue } from "../types/clue";
+import { emptyBoard, type Board, type Clue, type ExternalClue } from "../types/clue";
 import JeopardyBoard from "../ui/EditBoard/EditJeopardyBoard";
 import { useParams } from "react-router-dom";
 import "../styles/EditBoard/BoardToolbar.css"
+import useBoardSaveState from "../hooks/useBoardSaveState";
+import { useNavigate } from "react-router-dom";
 
 export default function EditBoard() {
     
-    const [clues, setClues] = useState<Clue[]>([]);
     const [boardKey, setBoardKey] = useState(0);
     const [boardTitle, setBoardTitle] = useState(""); 
-    const [isSaved, setSaved] = useState(true);
+    const navigate = useNavigate();
+    const {
+        clues,
+        modalOpen,
+        selectedClue,
+        openTextEditor,
+        closeTextEditor,
+        updateClue,
+        setClues,
+        saveBoard,
+        isSaved, 
+        setSaved
+    } = useBoardSaveState(emptyBoard(), boardTitle);
 
+    
     const { slug } = useParams();
 
     useEffect(() => {
 
         const getBoardData = async () => {
 
+            // const res = await fetch(
+            //     `${import.meta.env.VITE_BACKEND_BOARD_API}/request_board/${slug}`, 
+            //     { credentials: "include" }
+            // )
+
             const res = await fetch(
-                `${import.meta.env.VITE_BACKEND_BOARD_API}/request_board/${slug}`, 
+                `/api/boards/request_board/${slug}`, 
                 { credentials: "include" }
             )
             if (!res.ok) {
                 return;
             } else {
                 const data: Board = await res.json();
+                console.log(data)
                 setBoardTitle(data.title)
                 setClues(data.clues);
                 setBoardKey(prev => prev + 1); // also needed to refresh state
             }
-
         }
-
         getBoardData()
 
     }, [])
 
     async function getRandomBoard() {
-        const res = await fetch(`${import.meta.env.VITE_BACKEND_BOARD_API}/random_board`);
+        // const res = await fetch(`${import.meta.env.VITE_BACKEND_BOARD_API}/random_board`);
+
+        const res = await fetch(`/api/boards/random_board`);
+
         if (!res.ok) {
             return;
         }
@@ -77,11 +98,14 @@ export default function EditBoard() {
                 placeholder={"Enter title here"} 
             />
             <JeopardyBoard 
-                boardTitle={boardTitle} 
-                setBoardTitle={setBoardTitle} 
-                initialClues={clues} 
+                clues={clues}
+                setClues={setClues}
+                modalOpen={modalOpen}
+                selectedClue={selectedClue}
+                openTextEditor={openTextEditor}
+                closeTextEditor={closeTextEditor}
+                updateClue={updateClue}
                 key={boardKey} 
-                isSaved={isSaved} 
                 setSaved={setSaved}
             />
 
@@ -99,12 +123,13 @@ export default function EditBoard() {
                         {isSaved ? '✅ Saved' : '● Unsaved changes'}
                     </div>
                     <button 
-                        onClick={() => {}} // need to update so we can actually save the full board when changing things
+                        onClick={() => saveBoard(clues, boardTitle)} // need to update so we can actually save the full board when changing things
                         className="btn-save"
                         disabled={isSaved}
                     >
                         Save Board
                     </button>
+                    <button onClick={() => {navigate(`/setup/${slug}`)}}>Play</button>
                 </div>
             </div>
         </div>

@@ -1,4 +1,4 @@
-use crate::models::user::{CreateAndCheckUser, User, UserSession};
+use crate::{extractors::optional_user::OptionalUser, models::user::{CreateAndCheckUser, User}};
 use axum::{
     Router,
     routing::{get, post},
@@ -20,30 +20,14 @@ pub fn user_routes() -> Router<Pool<Postgres>> {
         .route("/confirm_session", get(confirm_session))
 }
 
-async fn confirm_session(State(pool): State<Pool<Postgres>>, cookie: Cookies) -> StatusCode {
-    if let Some(session) = cookie.get("session_token") {
-        println!("{}", session.value());
-        let session_token = match Uuid::parse_str(session.value()) {
-            Ok(uuid) => uuid,
-            Err(_) => return StatusCode::UNAUTHORIZED,
-        };
-        let token_in_db: Result<UserSession, sqlx::Error> =
-            sqlx::query_as("SELECT * FROM sessions WHERE session_token = $1")
-                .bind(session_token)
-                .fetch_one(&pool)
-                .await;
-        match token_in_db {
-            Ok(_) => StatusCode::OK,
-            Err(e) => {
-                println!("error in cookie thing");
-                println!("{e}");
-                StatusCode::NOT_FOUND
-            }
-        }
+async fn confirm_session(OptionalUser(optional_user): OptionalUser) -> (StatusCode, Json<String>) {
+
+    if let Some(user) = optional_user {
+        return (StatusCode::OK, Json(user.username));
     } else {
-        println!("No cookie found");
-        StatusCode::NOT_FOUND
+        return (StatusCode::NOT_FOUND, Json("".to_string()));
     }
+
 }
 async fn login(
     State(pool): State<Pool<Postgres>>,

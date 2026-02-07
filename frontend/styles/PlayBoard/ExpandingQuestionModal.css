@@ -17,37 +17,44 @@
     transition: all 1s ease;
 }
 
-.modal-content {
-  width: 90%;
-  height: 92%;
+.play-modal-content {
+  width: 95%;
+  height: 85%;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
 }
 
-.modal-content > span {
-  display: -webkit-box; 
-  -webkit-line-clamp: 4;    
-  line-clamp: 4;    
-  -webkit-box-orient: vertical; 
-  overflow: hidden;             
-  text-overflow: ellipsis; 
+.play-modal-clue,
+.play-modal-response {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
   word-break: break-word;  
-  font-size: 7rem;
+  flex: 1; 
+  align-items: flex-end;
+  padding-bottom: 2rem;
+}
+.play-modal-response {
+  border-top: dotted white 3px;
+  align-items: flex-start;
+  padding-top: 1rem;
+  margin-top: 1rem;
+  animation: fadeIn 1.5s ease;
 }
 
-
-.text-content {
-  display: -webkit-box; 
-  -webkit-line-clamp: 4;    
-  line-clamp: 4;    
-  -webkit-box-orient: vertical; 
-  overflow: hidden;             
-  text-overflow: ellipsis; 
-  text-align: center;
-  word-break: break-word;  
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .expanding-modal-header {
@@ -59,12 +66,25 @@
   justify-content: space-between;
 }
 
-.expanding-modal-header:hover {
-  cursor:auto;
+.modal:hover {
+  cursor:default;
 }
 
-.header-spacer {
+
+.continue-button {
   flex: 1; 
+  padding: 5px;
+  text-align: center;
+  flex: 1;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  max-width: 100%;
+  font-size: large;
+}
+
+.continue-button:hover {
+  cursor: pointer;
 }
 
 .header-title {
@@ -80,6 +100,21 @@
 
 .header-options {
   flex: 1;
-  text-align: right;
   height: 100%;
+  display: flex;
+  gap: 1rem;
+}
+
+.option {
+  font-size: larger;
+  text-align: center;
+}
+.option > kbd {
+  background-color: white;
+  color: #333;
+  padding: 2px 6px;
+  border-radius: 3px;
+  border: 1px solid #999;
+  font-family: monospace;
+  font-size: larger;
 }
