@@ -64,11 +64,19 @@ async fn request_board(
 
     let user_id = optional_user.map(|u| u.id);
 
-    let board: Result<Board, sqlx::Error> = sqlx::query_as("SELECT * FROM boards WHERE slug = $1 AND ($2::INTEGER IS NULL OR user_id = $2 OR is_public = true)")
-        .bind(slug)
-        .bind(user_id)
-        .fetch_one(&pool)
-        .await;
+    let board: Result<Board, sqlx::Error> = sqlx::query_as(
+        "SELECT * FROM boards 
+        WHERE slug = $1 
+        AND ($2::INTEGER IS NULL OR user_id = $2 OR is_public = true)
+        ORDER BY 
+        CASE WHEN user_id = $2 THEN 0 ELSE 1 END,
+        id ASC
+        LIMIT 1"
+    )
+    .bind(&slug)
+    .bind(user_id)
+    .fetch_one(&pool)
+    .await;
 
     match board {
         Ok(board) => {
@@ -119,14 +127,32 @@ async fn save_full_board(
     State(pool): State<Pool<Postgres>>,
     Json(board): Json<InternalBoard>,
 ) -> (StatusCode, Json<String>) {
-
-    let slug = match generate_unique_slug(&pool, id, &board.title).await {
-        Ok(s) => s,
-        Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json("Failed to generate slug".to_string()))
+    eprintln!("=== SAVE BOARD REQUEST ===");
+    eprintln!("User ID: {}", id);
+    eprintln!("Board title: {}", board.title);
+    eprintln!("Board slug (from frontend): '{}'", board.slug);
+    eprintln!("Slug is empty: {}", board.slug.is_empty());
+    
+    let slug = if board.slug.is_empty() {
+        // New board - generate slug
+        match generate_unique_slug(&pool, id, &board.title).await {
+            Ok(s) => s,
+            Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json("Failed to generate slug".to_string()))
+        }
+    } else {
+        // Existing board - use provided slug
+        board.slug.clone()
     };
 
+    eprintln!("Attempting upsert with user_id={}, slug={}, title={}", id, slug, board.title);
+
+    // Upsert board
     let board_result = sqlx::query_scalar!(
-        "INSERT INTO boards (user_id, board_name, slug) VALUES ($1, $2, $3) RETURNING id",
+        "INSERT INTO boards (user_id, board_name, slug) 
+        VALUES ($1, $2, $3)
+        ON CONFLICT (user_id, slug) DO UPDATE 
+        SET board_name = EXCLUDED.board_name
+        RETURNING id",
         id,
         board.title,
         slug
@@ -135,18 +161,32 @@ async fn save_full_board(
     .await;
 
     let board_id = match board_result {
-        Ok(board_id) => board_id,
-
-        Err(_) => {
-            return (
-                StatusCode::NOT_FOUND,
-                Json(format!("Can't save board to database at this time")),
-            );
+        Ok(board_id) => {
+            eprintln!("Board upserted successfully with id: {}", board_id);
+            board_id
+        },
+        Err(e) => {
+            eprintln!("Database error during upsert: {:?}", e);
+            return (StatusCode::INTERNAL_SERVER_ERROR, Json("Can't save board".to_string()))
         }
     };
 
-    let clues = board.clues;
+    eprintln!("Deleting old clues for board_id: {}", board_id);
+    
+    // Delete old clues for this board
+    let delete_result = sqlx::query!("DELETE FROM board_clues WHERE board_id = $1", board_id)
+        .execute(&pool)
+        .await;
+    
+    match delete_result {
+        Ok(result) => eprintln!("Deleted {} old clues", result.rows_affected()),
+        Err(e) => eprintln!("Error deleting clues: {:?}", e)
+    }
 
+    // Insert new clues
+    let clues = board.clues;
+    eprintln!("Inserting {} new clues", clues.len());
+    
     let clue_vals: Vec<i32> = clues.iter().map(|c| c.clue_val).collect();
     let daily_doubles: Vec<bool> = clues.iter().map(|c| c.daily_double).collect();
     let rounds: Vec<String> = clues.iter().map(|c| c.round.clone()).collect();
@@ -157,8 +197,8 @@ async fn save_full_board(
     let positions: Vec<i32> = clues.iter().map(|c| c.position).collect();
 
     let clue_insert_result = sqlx::query(
-    "INSERT INTO board_clues (board_id, clue_val, daily_double, round, category, clue, response, clue_is_picture, position)
-        SELECT $1, * FROM UNNEST ($2::int[], $3::bool[], $4::text[], $5::text[], $6::text[], $7::text[], $8::bool[], $9::int[])"
+        "INSERT INTO board_clues (board_id, clue_val, daily_double, round, category, clue, response, clue_is_picture, position)
+         SELECT $1, * FROM UNNEST ($2::int[], $3::bool[], $4::text[], $5::text[], $6::text[], $7::text[], $8::bool[], $9::int[])"
     )
     .bind(board_id)
     .bind(clue_vals)
@@ -173,12 +213,17 @@ async fn save_full_board(
     .await;
 
     match clue_insert_result {
-        Ok(_) => return (StatusCode::OK, Json(slug)),
-        Err(_) => return (StatusCode::INTERNAL_SERVER_ERROR, Json("Failed to save clues".to_string()))
+        Ok(result) => {
+            eprintln!("Successfully inserted {} clues", result.rows_affected());
+            eprintln!("=== SAVE COMPLETE ===");
+            (StatusCode::OK, Json(slug))
+        },
+        Err(e) => {
+            eprintln!("Failed to save clues: {:?}", e);
+            (StatusCode::INTERNAL_SERVER_ERROR, Json("Failed to save clues".to_string()))
+        }
     }
-
 }
-
 
 async fn update_category(
     AuthenticatedUser { id, username: _}: AuthenticatedUser,

@@ -12,6 +12,7 @@ import SetupPlayBoard from "../routes/SetupPlayBoard.tsx"
 import PlayBoard from "../routes/PlayBoard.tsx"
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Buzzer from "../routes/Buzzer.tsx"
+import WaitingRoom from "../routes/WaitingRoom.tsx"
 
 const theme = createTheme({
   typography: {
@@ -58,7 +59,8 @@ createRoot(document.getElementById('root')!).render(
             <Route path="setup/:slug" element={<ProtectedRoute element={<SetupPlayBoard />} />} />    
             <Route path="user/:userName" element={<ProtectedRoute element={<>yo... this is the user page</>} />} />  
             <Route path="board/:room" element={<ProtectedRoute element={<PlayBoard />} />} />  
-            <Route path="player/:room" element={<ProtectedRoute element={<Buzzer />} />} />    
+            <Route path="player/:room" element={<ProtectedRoute element={<Buzzer />} />} />
+            <Route path="waiting-room/:room" element={<ProtectedRoute element={<WaitingRoom />} />} />    
             <Route path="error" element={<ErrorPage />} />
             <Route path="*" element={<Navigate to="/error" replace />} />
           </Routes>

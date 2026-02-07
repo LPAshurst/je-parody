@@ -1,8 +1,9 @@
 import { io } from 'socket.io-client';
 
-const URL = import.meta.env.VITE_BACKEND_BASE;
+// not needed when doing dev server
+// const URL = import.meta.env.VITE_BACKEND_BASE;
 
-export let socket = io(URL, {
+export let socket = io({
   autoConnect: true,
   reconnection: true,
   reconnectionAttempts: 5,

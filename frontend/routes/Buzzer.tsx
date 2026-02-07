@@ -1,7 +1,7 @@
 import { useParams } from "react-router-dom";
 import "../styles/Buzzer.css"
 import { useEffect, useState } from "react";
-import { socket } from "../src/socket";
+import { rejoinRoom, socket } from "../src/socket";
 import type { Game } from "../types";
 import { UseAuth } from "../context/AuthContext";
 
@@ -16,6 +16,11 @@ export default function Buzzer() {
     }
 
     useEffect(() => {
+
+        if (room) {
+            rejoinRoom(room);
+        }
+
         socket.on("get-state", (game: Game) => {
             setBuzzerLocked(game.buzzer_locked)
         })

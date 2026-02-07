@@ -1,0 +1,256 @@
+.waiting-room-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  box-sizing: border-box;
+  width: 100vw;
+}
+
+.waiting-room-card {
+  background: white;
+  border-radius: 24px;
+  padding: 0;
+  box-shadow: 0 30px 90px rgba(0, 0, 0, 0.3);
+  max-width: 700px;
+  width: 100%;
+  overflow: hidden;
+  animation: slideIn 0.5s ease;
+}
+
+.room-header {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.room-code-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.room-code-label {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 500;
+}
+
+.room-code {
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: white;
+  letter-spacing: 4px;
+  text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.leave-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 2px solid white;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  backdrop-filter: blur(10px);
+}
+
+.leave-btn:hover {
+  background: white;
+  color: #667eea;
+  transform: translateY(-2px);
+}
+
+.waiting-content {
+  padding: 3rem 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.waiting-title {
+  font-size: 2rem;
+  color: #2d3748;
+  margin: 0;
+  text-align: center;
+  font-weight: 700;
+}
+
+.players-section {
+  width: 100%;
+}
+
+.players-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.players-count {
+  font-size: 1.1rem;
+  color: #667eea;
+  font-weight: 700;
+}
+
+.players-grid {
+  display: grid;
+  gap: 1rem;
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+}
+
+.players-grid::-webkit-scrollbar {
+  width: 6px;
+}
+
+.players-grid::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.players-grid::-webkit-scrollbar-thumb {
+  background: #667eea;
+  border-radius: 10px;
+}
+
+.player-card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #f6f8fb 0%, #ffffff 100%);
+  border-radius: 12px;
+  border: 2px solid #e2e8f0;
+  transition: all 0.3s ease;
+  animation: fadeIn 0.4s ease;
+}
+
+.player-card:hover {
+  transform: translateX(4px);
+  border-color: #667eea;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.player-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.player-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.player-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #2d3748;
+}
+
+
+
+.waiting-animation {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #667eea;
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes bounce {
+  0%, 80%, 100% {
+    transform: scale(0);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .waiting-room-container {
+    padding: 1rem;
+  }
+
+  .waiting-room-card {
+    border-radius: 16px;
+  }
+
+  .room-header {
+    padding: 1.5rem;
+  }
+
+  .room-code {
+    font-size: 2rem;
+  }
+
+  .waiting-content {
+    padding: 2rem 1.5rem;
+  }
+
+  .waiting-title {
+    font-size: 1.5rem;
+  }
+}

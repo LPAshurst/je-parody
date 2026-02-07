@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useState } from "react";
+import LoadingSpinner from "../ui/common/LoadingSpinner";
 
 type AuthContextType = {
   isAuthenticated: boolean;
@@ -23,10 +24,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     const fetchLoginStatus = async () => {
       try {
+        //orignal
+        // const data = await fetch(
+        //   `${import.meta.env.VITE_BACKEND_AUTH_API}/confirm_session`,
+        //   { credentials: "include" }
+        // );
+
+        //ngrok
         const data = await fetch(
-          `${import.meta.env.VITE_BACKEND_AUTH_API}/confirm_session`,
+          `/api/user/confirm_session`,
           { credentials: "include" }
         );
+
         const user = await data.json()
         setUserName(user)
         if (data.ok) {
@@ -41,6 +50,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     };
     fetchLoginStatus();
   }, []);
+
+
+  if (loading) {
+    return <LoadingSpinner />
+  }
 
   return (
     <AuthContext.Provider value={{ isAuthenticated, loading, userName, setAuth: setIsAuthenticated}}>

@@ -1,7 +1,7 @@
 use serde::Deserialize;
 use socketioxide::extract::{Data, SocketRef, State};
 
-use crate::{socket::state::{self, GameClue, Player}};
+use crate::{models::game, socket::state::{self, GameClue, Player}};
 
 
 #[derive(Deserialize, Debug)]
@@ -31,6 +31,7 @@ struct SelectedClueData {
 
 
 async fn join_game(s: SocketRef, Data(game_data): Data<JoinGameData>, store: State<state::GameStore>) {
+    println!("{}", &game_data.user_name);
     s.join(game_data.room_id.clone()); 
     store.add_player(&game_data.room_id, 
         Player {
@@ -39,7 +40,6 @@ async fn join_game(s: SocketRef, Data(game_data): Data<JoinGameData>, store: Sta
         game_data.user_name.to_string()
 
     ).await;
-
     let _ = s.to(game_data.room_id.clone()).emit("user-joined", &game_data.user_name).await;
 }
 
@@ -55,14 +55,13 @@ async fn update_game(s: SocketRef, store: State<state::GameStore>, room_id: &str
 
     let game = store.get_game(room_id).await.unwrap();
     let code = game.code.clone();
-    let _ = s.to(code).emit("get-state", &game).await;
+    let _ = s.within(code).emit("get-state", &game).await;
 
 }
 
 async fn ask_for_state(s: SocketRef, Data(room_id): Data<String>, store: State<state::GameStore>) {
-    let rooms = s.rooms();
-    println!("All rooms in the / namespace: {:?}", rooms);
     let game = store.get_game(&room_id).await.unwrap();
+    println!("{}", game.players.len());
     let _ = s.emit("get-state", &game);
 
 }
@@ -76,7 +75,6 @@ async fn rejoin_room(s: SocketRef, Data(room_id): Data<String>) {
 
 async fn start_game(s: SocketRef, Data(start_game_data): Data<StartGameData>, store: State<state::GameStore>) {
 
-    println!("{:?}", start_game_data.clues);
     let game = store.initialize_game(&start_game_data.room_id, start_game_data.clues.clone(), start_game_data.players).await;
     let code: String = game.code.clone();
     let _ = s.to(code.clone()).emit("navigate-to-start", &game.code).await;
@@ -98,6 +96,8 @@ pub async fn on_game_connect(socket: SocketRef) {
 
     socket.on("select-clue", handle_selected_clue);
 
+    socket.on("close-clue", handle_closed_clue);
+
     socket.on("ask-for-state", ask_for_state);
 
     socket.on("rejoin-room", rejoin_room);
@@ -113,10 +113,15 @@ pub async fn on_game_connect(socket: SocketRef) {
 }
 
 async fn handle_selected_clue(s: SocketRef, Data(response_data): Data<SelectedClueData>, store: State<state::GameStore>) {
-
     store.select_clue(&response_data.room_id, response_data.position).await;
     update_game(s, store, &response_data.room_id).await;
 
+}
+
+async fn handle_closed_clue(s: SocketRef, Data(room_id): Data<String>, store: State<state::GameStore>) {
+    store.close_clue(&room_id).await;
+    println!("here");
+    update_game(s, store, &room_id).await;
 }
 
 async fn handle_buzz_in(s: SocketRef, Data(response_data): Data<JoinGameData>,  store: State<state::GameStore>) {
@@ -131,14 +136,3 @@ async fn handle_board_response(s: SocketRef, Data(response_data): Data<ResponseD
     store.update_score(&response_data.room_id, response_data.correct_response).await;
     update_game(s, store, &response_data.room_id).await;
 }
-
-
-// fn handle_submit_answer(socket: SocketRef, Data::<AnswerData>(data)) {
-//     // Your game logic here
-//     let is_correct = check_answer(&data.answer, &data.clue_id);
-    
-//     socket.emit("answer_result", AnswerResult {
-//         correct: is_correct,
-//         points: if is_correct { data.points } else { -data.points }
-//     }).ok();
-// }

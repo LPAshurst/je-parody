@@ -27,6 +27,7 @@ pub fn create_router(pool: PgPool) -> Router {
         "http://api.example.com".parse().unwrap(),
         "http://lorenzopi.local:5173".parse().unwrap(),
         "http://lorenzopi.local:4173".parse().unwrap(),
+        "https://elsy-unrude-jemma.ngrok-free.dev".parse().unwrap(), // dev proxy
     ];
 
     let cors_layer = CorsLayer::new()

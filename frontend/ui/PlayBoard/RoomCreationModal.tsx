@@ -1,6 +1,8 @@
 import Modal from "@mui/material/Modal";
 import "../../styles/PlayBoard/RoomCreationModal.css"
+import { Link } from "react-router-dom";
 interface RoomCreationModalProps {
+    slug: string,
     isOpen: boolean,
     startGame: () => void,
     boardName: string,
@@ -8,21 +10,24 @@ interface RoomCreationModalProps {
     players: string[],
     roomCode: string,
     createRoom: () => void,
+    cancelRoom: () => void,
 
 }
 export default function RoomCreationModal(
-    {
+    {   
+        slug,
         isOpen, 
         startGame, 
         boardName, 
         makingRoom, 
         players, 
         roomCode,
-        createRoom
+        createRoom,
+        cancelRoom
     }: RoomCreationModalProps
 ) {
     
-
+    console.log(makingRoom)
     return (
         <Modal
         open={isOpen}
@@ -55,7 +60,7 @@ export default function RoomCreationModal(
                     {!makingRoom 
                     ?
                         <div className="action-links">
-                            <a href="#">Edit</a> • <a href="#">Print</a> • <a href="#">Download</a> • <a href="#">Embed</a> • <a href="#">Share</a>
+                            <Link to={`/edit/${slug}`}>Edit</Link> • <a href="#">Print</a> • <a href="#">Download</a> • <a href="#">Embed</a> • <a href="#">Share</a>
                         </div>
                     :
                         <div className="room-options">
@@ -63,7 +68,7 @@ export default function RoomCreationModal(
                                 <button onClick={startGame}>
                                     Play
                                 </button>
-                                <button>
+                                <button onClick={cancelRoom}>
                                     Cancel
                                 </button>
                             </div>

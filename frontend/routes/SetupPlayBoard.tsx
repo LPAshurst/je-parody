@@ -24,11 +24,14 @@ export default function SetupPlayBoard() {
             socket.emit("create-game");
         }
         setMakingRoom(true)
+    }
 
+    function cancelRoom() {
+        setMakingRoom(false)
+        socket.emit("cancel-game", roomCode)
     }
 
     function startGame() {
-        console.log(clues)
         socket.emit("start-game", {room_id: roomCode, clues: clues, players: players})
         navigate(`/board/${roomCode}`)
     }
@@ -40,6 +43,7 @@ export default function SetupPlayBoard() {
         };
 
         const onUserJoined = (userName: string) => {
+            console.log(userName)
             setPlayers(prev => [...prev, userName]);
         };
 
@@ -48,8 +52,12 @@ export default function SetupPlayBoard() {
 
         const getBoardData = async () => {
 
+            // const res = await fetch(
+            //     `${import.meta.env.VITE_BACKEND_BOARD_API}/request_board/${slug}`, 
+            //     { credentials: "include" }
+            // )
             const res = await fetch(
-                `${import.meta.env.VITE_BACKEND_BOARD_API}/request_board/${slug}`, 
+                `/api/boards/request_board/${slug}`, 
                 { credentials: "include" }
             )
             if (!res.ok) {
@@ -74,17 +82,17 @@ export default function SetupPlayBoard() {
         getBoardData()
 
         return () => {
-        socket.off("room-code", onRoomCode);
-        socket.off("user-joined", onUserJoined);
+            socket.off("room-code", onRoomCode);
+            socket.off("user-joined", onUserJoined);
         };
 
     }, [])
 
     return (
         <>
-            <RoomCreationModal isOpen={isOpen} startGame={startGame} boardName={boardName} makingRoom={makingRoom} players={players} roomCode={roomCode} createRoom={createRoom}/>
+            <RoomCreationModal slug={slug ? slug : ""} isOpen={isOpen} startGame={startGame} boardName={boardName} makingRoom={makingRoom} players={players} roomCode={roomCode} createRoom={createRoom} cancelRoom={cancelRoom}/>
             <div className="play-area">
-                <JeopardyBoard clues={clues} handleClueClick={() => {}}/>
+                <JeopardyBoard clues={clues} handleClueClick={() => { } } isAnswering={false} answerQuestion={() => {}} handleCloseModal={() => {}}/>
             </div>
         </>
     )

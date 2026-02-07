@@ -6,11 +6,13 @@ import { useState } from "react";
 interface ClueCellProps {
     clue: PlayClue;
     handleClick: () => void;
+    isAnswering: boolean;
+    answerQuestion: (response: boolean) => void;
+    handleCloseModal: () => void;
 }
 
-export default function ClueCell({ clue, handleClick }: ClueCellProps) {
+export default function ClueCell({ clue, handleClick, isAnswering, answerQuestion, handleCloseModal }: ClueCellProps) {
     const [isOpen, setIsOpen] = useState(false);
-
 
     const onClick = () => {
         setIsOpen(true);    
@@ -21,12 +23,17 @@ export default function ClueCell({ clue, handleClick }: ClueCellProps) {
         <>
             {isOpen && (
                 <ExpandingQuestionModal
-                    onClose={() => setIsOpen(false)}
+                    answerQuestion={answerQuestion}
+                    isAnswering={isAnswering}
+                    onClose={() => {
+                        setIsOpen(false)
+                        handleCloseModal()
+                    }}
                     clue={clue}
                 />
             )}
-            <div className="play-cell" onClick={onClick}>
-                <span className="clue-value">${clue.clue_val}</span>     
+            <div className={clue.answered ? "answered-cell" : "play-cell"} onClick={onClick}>
+                {clue.answered ? <></> : <span className="clue-value">${clue.clue_val}</span>}  
             </div>
         </>
     );

@@ -20,7 +20,14 @@ export default function Login({modalType, setModalType}: LoginProps) {
 
     async function handleLogin(e: React.FormEvent) {
         e.preventDefault()
-        const res = await fetch(`${import.meta.env.VITE_BACKEND_AUTH_API}/login`, {
+        // const res = await fetch(`${import.meta.env.VITE_BACKEND_AUTH_API}/login`, {
+        //     method: "POST",
+        //     body: JSON.stringify({"username": user, "password": pass}),
+        //     credentials: "include",
+        //     headers: { "Content-Type": "application/json" },
+        // })
+
+        const res = await fetch(`/api/user/login`, {
             method: "POST",
             body: JSON.stringify({"username": user, "password": pass}),
             credentials: "include",

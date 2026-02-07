@@ -119,23 +119,40 @@ impl GameStore {
         game.buzzer_locked = true;
         Some(())
     }
+
+    pub async fn close_clue(&self, game_id: &str) -> Option<()> {
+        let mut games = self.games.write().await;
+        let game = games.get_mut(game_id)?;
+
+        game.current_clue_position = None;
+        game.buzzer_locked = true;
+        Some(())
+
+    }
     
     pub async fn update_score(&self, game_id: &str, correct_response: bool) -> Option<()> {
         let mut games = self.games.write().await;
         let game = games.get_mut(game_id)?;
         let clue = game.clues.get_mut(game.current_clue_position.unwrap())?;
-        let player = game.players.get_mut(&game.active_player.clone().unwrap())?;
-        
 
-        if correct_response {
-            player.score += clue.clue_val;
+        if let Some(player) = &game.active_player {
+            let player = game.players.get_mut(player).unwrap();
+                if correct_response {
+                player.score += clue.clue_val;
+                clue.answered = true;
+                game.current_clue_position = None;
+                game.buzzer_locked = true;
+            } else {
+                player.score -= clue.clue_val;
+                game.buzzer_locked = false;
+            }
+        } else {
+            // forfeit the points
             clue.answered = true;
             game.current_clue_position = None;
             game.buzzer_locked = true;
-        } else {
-            player.score -= clue.clue_val;
-            game.buzzer_locked = false;
         }
+        
         game.active_player = None;
 
         Some(())

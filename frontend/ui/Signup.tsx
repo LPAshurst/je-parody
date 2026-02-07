@@ -21,12 +21,21 @@ export default function Signup({modalType, setModalType}: SignupProps) {
 
     async function handleSignup(e: React.FormEvent) {
         e.preventDefault();
-        const res = await fetch(`${import.meta.env.VITE_BACKEND_AUTH_API}/signup`, {
+        // const res = await fetch(`${import.meta.env.VITE_BACKEND_AUTH_API}/signup`, {
+        //     method: "POST",
+        //     body: JSON.stringify({"username": user, "password": pass}),
+        //     credentials: "include",
+        //     headers: { "Content-Type": "application/json" },
+        // })
+
+        const res = await fetch(`/api/user/signup`, {
             method: "POST",
             body: JSON.stringify({"username": user, "password": pass}),
             credentials: "include",
             headers: { "Content-Type": "application/json" },
         })
+
+
 
         if (res.ok) {
             auth.setAuth(true);
