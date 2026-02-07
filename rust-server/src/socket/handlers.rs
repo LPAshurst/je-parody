@@ -1,7 +1,7 @@
 use serde::Deserialize;
 use socketioxide::extract::{Data, SocketRef, State};
 
-use crate::{models::game, socket::state::{self, GameClue, Player}};
+use crate::{socket::state::{self, GameClue, Player}};
 
 
 #[derive(Deserialize, Debug)]
@@ -14,7 +14,6 @@ struct JoinGameData {
 struct StartGameData {
     room_id: String,
     clues: Vec<GameClue>,
-    players: Vec<String>,
 }
 
 #[derive(Deserialize, Debug)]
@@ -36,6 +35,7 @@ async fn join_game(s: SocketRef, Data(game_data): Data<JoinGameData>, store: Sta
     store.add_player(&game_data.room_id, 
         Player {
             score: 0, 
+            has_answered: false
         },
         game_data.user_name.to_string()
 
@@ -75,7 +75,7 @@ async fn rejoin_room(s: SocketRef, Data(room_id): Data<String>) {
 
 async fn start_game(s: SocketRef, Data(start_game_data): Data<StartGameData>, store: State<state::GameStore>) {
 
-    let game = store.initialize_game(&start_game_data.room_id, start_game_data.clues.clone(), start_game_data.players).await;
+    let game = store.initialize_game(&start_game_data.room_id, start_game_data.clues.clone()).await;
     let code: String = game.code.clone();
     let _ = s.to(code.clone()).emit("navigate-to-start", &game.code).await;
     let _ = s.to(code).emit("get-state", &game).await;

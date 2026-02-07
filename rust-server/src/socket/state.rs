@@ -26,6 +26,7 @@ fn generate_code() -> String {
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct Player {
     pub score: i32,
+    pub has_answered: bool
 }
 
 #[derive(Clone, Debug, serde::Serialize)]
@@ -56,6 +57,17 @@ pub struct GameStore {
     pub games: Arc<RwLock<GameRooms>>,
 }
 
+
+fn forfeit_clue(game: &mut Game) -> Option<()> {
+    for player in game.players.values_mut() {
+        player.has_answered = false;
+    }
+    game.current_clue_position = None;
+    game.buzzer_locked = true;
+    Some(())
+}
+    
+
 impl GameStore {
     pub async fn create_game(&self) -> Game {
         let code = generate_code();
@@ -73,16 +85,12 @@ impl GameStore {
     }
     
 
-    pub async fn initialize_game(&self, game_id: &str, clues: Vec<GameClue>, players: Vec<String>) -> Game {
+    pub async fn initialize_game(&self, game_id: &str, clues: Vec<GameClue>) -> Game {
         let mut games = self.games.write().await;
         let game = games.get_mut(game_id).unwrap();
-        let game_players = &mut game.players;
-        for player in players {
-            game_players.insert(player, Player {score: 0});
-        }
         game.clues = clues;
 
-        games.get(game_id).unwrap().clone()
+        game.clone()
 
     }
 
@@ -101,6 +109,15 @@ impl GameStore {
 
         let mut games = self.games.write().await;
         let game = games.get_mut(game_id)?;
+
+        if clue_position >= game.clues.len() {
+            return None;
+        }
+
+        if game.clues[clue_position].answered {
+            return None;
+        }
+
         game.current_clue_position = Some(clue_position);
         game.buzzer_locked = false;
 
@@ -123,34 +140,40 @@ impl GameStore {
     pub async fn close_clue(&self, game_id: &str) -> Option<()> {
         let mut games = self.games.write().await;
         let game = games.get_mut(game_id)?;
-
-        game.current_clue_position = None;
-        game.buzzer_locked = true;
-        Some(())
-
+        forfeit_clue(game)
     }
-    
+
+
+
     pub async fn update_score(&self, game_id: &str, correct_response: bool) -> Option<()> {
         let mut games = self.games.write().await;
         let game = games.get_mut(game_id)?;
-        let clue = game.clues.get_mut(game.current_clue_position.unwrap())?;
+        
+        let clue_position = game.current_clue_position?;
+        let clue = game.clues.get_mut(clue_position)?;
+        let clue_value = clue.clue_val;
 
-        if let Some(player) = &game.active_player {
-            let player = game.players.get_mut(player).unwrap();
-                if correct_response {
-                player.score += clue.clue_val;
+        if let Some(player_name) = &game.active_player {
+            let player = game.players.get_mut(player_name).unwrap();
+
+            if correct_response {
+                player.score += clue_value;
                 clue.answered = true;
                 game.current_clue_position = None;
                 game.buzzer_locked = true;
+
+                for player in game.players.values_mut() {
+                    player.has_answered = false;
+                }
             } else {
-                player.score -= clue.clue_val;
+                player.score -= clue_value;
                 game.buzzer_locked = false;
+                player.has_answered = true;
             }
         } else {
             // forfeit the points
             clue.answered = true;
-            game.current_clue_position = None;
-            game.buzzer_locked = true;
+            forfeit_clue(game);
         }
         
         game.active_player = None;
