@@ -41,6 +41,11 @@ export default function useBoardSaveState(initialClues: Clue[], boardTitle: stri
             slug: slug || ""
         }
 
+        if (!board.title) {
+            // No title should fail to save
+            return;
+        }
+
         const res = await fetch(`/api/boards/save_full_board`, {
             method: "POST",
             body: JSON.stringify(board),
