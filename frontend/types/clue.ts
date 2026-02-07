@@ -17,7 +17,7 @@ export interface Game {
 
 export interface Player {
   score: number;
-  hasAnswered: boolean;
+  has_answered: boolean;
 }
 
 export interface Clue {

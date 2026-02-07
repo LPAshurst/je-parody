@@ -20,21 +20,27 @@ export default function Buzzer() {
 
         if (room) {
             rejoinRoom(room);
+            socket.emit("ask-for-state", room);
         }
 
         socket.on("get-state", (game: Game) => {
             setBuzzerLocked(game.buzzer_locked)
-            setHasAnswered(game.players[auth.userName].hasAnswered)
+            setHasAnswered(game.players[auth.userName].has_answered)
         })
+
+
+        return () => {
+            socket.off("get-state")
+        }
 
     }, [])
 
     return (
     <div className="buzzer-container">
         <button 
-        className={`buzzer-button ${!hasAnswered && buzzerLocked ? "disabled" : ""}`}
+        className={`buzzer-button ${hasAnswered || buzzerLocked ? "disabled" : ""}`}
         onClick={buzz}
-        disabled={buzzerLocked}
+        disabled={hasAnswered || buzzerLocked}
         >
         BUZZ
         </button>

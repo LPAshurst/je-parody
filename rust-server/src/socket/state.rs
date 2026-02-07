@@ -76,7 +76,7 @@ impl GameStore {
             players: HashMap::new(),
             current_clue_position: None,
             active_player: None,
-            buzzer_locked: false,
+            buzzer_locked: true,
             clues: Vec::new()
         };
         

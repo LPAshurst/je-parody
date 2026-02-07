@@ -61,7 +61,6 @@ async fn update_game(s: SocketRef, store: State<state::GameStore>, room_id: &str
 
 async fn ask_for_state(s: SocketRef, Data(room_id): Data<String>, store: State<state::GameStore>) {
     let game = store.get_game(&room_id).await.unwrap();
-    println!("{}", game.players.len());
     let _ = s.emit("get-state", &game);
 
 }
@@ -78,7 +77,7 @@ async fn start_game(s: SocketRef, Data(start_game_data): Data<StartGameData>, st
     let game = store.initialize_game(&start_game_data.room_id, start_game_data.clues.clone()).await;
     let code: String = game.code.clone();
     let _ = s.to(code.clone()).emit("navigate-to-start", &game.code).await;
-    let _ = s.to(code).emit("get-state", &game).await;
+    let _ = s.within(code).emit("get-state", &game).await;
 
 }
 
