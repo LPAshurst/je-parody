@@ -32,7 +32,7 @@ export default function SetupPlayBoard() {
     }
 
     function startGame() {
-        socket.emit("start-game", {room_id: roomCode, clues: clues, players: players})
+        socket.emit("start-game", {room_id: roomCode, clues: clues})
         navigate(`/board/${roomCode}`)
     }
 

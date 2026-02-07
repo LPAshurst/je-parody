@@ -11,8 +11,8 @@ export default function HomePage() {
     const [roomCode, setRoomCode] = useState<string>("");
     const [isLoading, setIsLoading] = useState(false);
     const [showBoards, setShowBoards] = useState(false);
+    
     const auth = UseAuth();
-    console.log(auth.userName)
 
     if (auth.loading) {
         return <div className="home-container">Loading...</div>;
