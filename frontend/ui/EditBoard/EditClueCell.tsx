@@ -30,9 +30,9 @@ function MediaOrText({
         );
     }
     return (
-        <div className="text-content">
+        <span className="text-content">
             {fallbackText ?? processedContent.content.toString()}
-        </div>
+        </span>
     );
 }
 

@@ -13,6 +13,7 @@ export default function processClueContent(html: string): {
     const temp = document.createElement('div');
     temp.innerHTML = clean;
 
+
     const hasImg = temp.querySelector('img');
     const hasVideo = temp.querySelector('video');
     const hasMedia = !!(hasImg || hasVideo);
@@ -25,9 +26,13 @@ export default function processClueContent(html: string): {
         };
     } else {
 
+        let text = temp.textContent || temp.innerText || ''
+
+        text = text.replace(/\u00A0/g, ' ');
+
         return { 
             hasMedia: false, 
-            content: temp.textContent || temp.innerText || '' 
+            content: text 
         };
     }
 }
