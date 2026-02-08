@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from '../context/AuthContext.tsx'
 import './index.css'
-import App from './App.tsx'
+import JeopardyApp from './App.tsx'
 import HomePage from '../routes/HomePage.tsx'
 import ErrorPage from '../routes/Error.tsx'
 import ProtectedRoute from '../routes/ProtectedRoute.tsx'
@@ -52,7 +52,7 @@ createRoot(document.getElementById('root')!).render(
       <AuthProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<App />} />
+            <Route path="/" element={<JeopardyApp />} />
             <Route path="home" element={<ProtectedRoute element={<HomePage />} />} />
             <Route path="edit/:slug" element={<ProtectedRoute element={<EditBoard />} />} />
             <Route path="create" element={<ProtectedRoute element={<EditBoard />} />} />  

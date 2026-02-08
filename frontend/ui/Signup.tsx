@@ -35,11 +35,9 @@ export default function Signup({modalType, setModalType}: SignupProps) {
             headers: { "Content-Type": "application/json" },
         })
 
-
-
         if (res.ok) {
             auth.setAuth(true);
-            navigate("home")
+            navigate("/home")
         } else {
             const data = await res.json()
             setErrorMessage(data)

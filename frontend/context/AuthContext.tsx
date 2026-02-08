@@ -37,9 +37,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         );
 
         const user = await data.json()
-        setUserName(user)
         if (data.ok) {
           setIsAuthenticated(true);
+          setUserName(user)
+
         }
       } catch (err) {
         console.error("Auth check failed", err);
@@ -48,6 +49,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setLoading(false); 
       }
     };
+
     fetchLoginStatus();
   }, []);
 

@@ -38,7 +38,7 @@ export default function Login({modalType, setModalType}: LoginProps) {
         if (!res.ok) {
             setErrorMessage(data)
         } else {
-            navigate("home")
+            navigate("/home")
         }
     }
 
@@ -85,7 +85,7 @@ export default function Login({modalType, setModalType}: LoginProps) {
                                 inputProps={{ minLength: 8, maxLength: 25 }}  // I know this is deprected and its stupid but whatever
                             />
                         </div>
-                        <p style={{fontSize: ".815rem"}}>New to ConcertApp? <a style={{cursor: "pointer"}} onClick={() => handleClose("signup")}>Sign up</a></p>
+                        <p style={{fontSize: ".815rem"}}>New to Je-parody? <a style={{cursor: "pointer"}} onClick={() => handleClose("signup")}>Sign up</a></p>
                         <div className="login-footer">
                             <LoginButton disabled={buttonDisabled} type="submit">Log in</LoginButton>
                         </div>

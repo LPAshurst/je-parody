@@ -1,62 +1,49 @@
-import { Music } from 'lucide-react';
-import Login from '../ui/Login';
 import { useState } from 'react';
-import Signup from '../ui/Signup';
 import { UseAuth } from '../context/AuthContext';
 import { Navigate } from 'react-router-dom';
-import LoadingSpinner from "../ui/common/LoadingSpinner";
+import Login from '../ui/Login';
+import Signup from '../ui/Signup';
+import "../styles/App.css"
 
-
-export default function ConcertDiscoveryApp () {
+export default function JeopardyApp() {
   const [modalType, setModalType] = useState<"login" | "signup" | null>(null);
-
-    const { isAuthenticated, loading } = UseAuth();
-
-    if (loading) {
-      return <LoadingSpinner />;
-    }
-
-    if (isAuthenticated) {
-      return <Navigate to="/home" replace />;
-    }
+  const { isAuthenticated } = UseAuth();
+  
+  if (isAuthenticated) {
+    return <Navigate to="/home" replace />;
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-indigo-900 text-white">
-      <div className="container mx-auto px-4 py-8">
-        <header className="text-center mb-12">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent">
-              Jeopardy!
-            </h1>
-          </div>
-          <p className="text-gray-300 text-lg">Login bro please.... login and give me your information i can be trusted with it</p>
-        </header>
-
-        {/* User Profile Header */}
-      
-        <Login modalType={modalType} setModalType={setModalType}></Login>
-
-        <Signup modalType={modalType} setModalType={setModalType} />
-     
-        
-        <div className="text-center mb-12">
-          <button
-            // onClick={handleLogIn}
-            onClick={() => {setModalType("login")}}
-            className="bg-green-600 hover:bg-green-700 px-8 py-4 rounded-full text-lg font-semibold transition-colors flex items-center gap-2 mx-auto"
-          >
-            <Music className="w-5 h-5" />
-            Login to my app
-          </button>
-          
-          <p className="text-gray-400 text-sm mt-4">
-            Makeeee uhhhhh Jeopardy boards or some shit
-          </p>
-          
+    <div className="landing-container">
+      <div className="landing-content">
+        <div className="logo-area">
+          <h1 className="logo-title">Je-parody</h1>
+          <p className="logo-subtitle">trivia. your way.</p>
         </div>
 
+        <div className="cta-section">
+          <button
+            onClick={() => setModalType("login")}
+            className="cta-button primary"
+          >
+            Log In
+          </button>
+          
+          <button
+            onClick={() => setModalType("signup")}
+            className="cta-button secondary"
+          >
+            Sign Up
+          </button>
+        </div>
+
+        <p className="footer-text">
+          Create custom boards. Host games. Challenge friends.
+        </p>
       </div>
+
+      <Login modalType={modalType} setModalType={setModalType} />
+      <Signup modalType={modalType} setModalType={setModalType} />
     </div>
   );
-};
-
+}
