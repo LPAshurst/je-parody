@@ -4,6 +4,7 @@ import { DarkTextField, LoginButton } from "../styles/muiStyled";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Modal from "@mui/material/Modal";
+import { UseAuth } from "../context/AuthContext";
 
 interface LoginProps {
   modalType: "login" | "signup" | null;
@@ -16,7 +17,7 @@ export default function Login({modalType, setModalType}: LoginProps) {
     const [pass, setPass] = useState("");
     const [errorMessage, setErrorMessage] = useState("");
     const navigate = useNavigate();
-
+    const auth = UseAuth();
 
     async function handleLogin(e: React.FormEvent) {
         e.preventDefault()
@@ -34,11 +35,13 @@ export default function Login({modalType, setModalType}: LoginProps) {
             headers: { "Content-Type": "application/json" },
         })
 
-        const data = await res.json();
+        const userData: string = await res.json();
         if (!res.ok) {
-            setErrorMessage(data)
+            setErrorMessage(userData)
         } else {
-            navigate("/home")
+            auth.setUsername(userData);
+            auth.setAuth(true)
+            navigate("/home");
         }
     }
 

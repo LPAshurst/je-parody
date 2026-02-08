@@ -34,13 +34,14 @@ export default function Signup({modalType, setModalType}: SignupProps) {
             credentials: "include",
             headers: { "Content-Type": "application/json" },
         })
-
-        if (res.ok) {
-            auth.setAuth(true);
-            navigate("/home")
+        
+        const userData: string = await res.json();
+        if (!res.ok) {
+            setErrorMessage(userData)
         } else {
-            const data = await res.json()
-            setErrorMessage(data)
+            auth.setUsername(userData);
+            auth.setAuth(true)
+            navigate("/home");
         }
     }
 

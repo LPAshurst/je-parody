@@ -71,7 +71,7 @@ async fn login(
 
     return (
         StatusCode::CREATED,
-        Json(format!("Cookie made for {}", user.username).into()),
+        Json(user.username), // give the user their username back : D
     );
 }
 
@@ -113,7 +113,7 @@ async fn signup(
             cookies.add(cookie);
             (
                 StatusCode::CREATED,
-                Json(String::from("Successfully signed up")),
+                Json(new_user.username), // give the user their username back : D,
             )
         }
         Err(sqlx::Error::Database(db_err)) => {
