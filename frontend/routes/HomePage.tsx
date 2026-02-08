@@ -13,11 +13,7 @@ export default function HomePage() {
     const [showBoards, setShowBoards] = useState(false);
     
     const auth = UseAuth();
-
-    if (auth.loading) {
-        return <div className="home-container">Loading...</div>;
-    }
-    
+        
     async function getBoards() {
         setIsLoading(true);
         try {

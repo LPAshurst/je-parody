@@ -6,13 +6,15 @@ type AuthContextType = {
   loading: boolean;
   userName: string;
   setAuth: (value: boolean) => void;
+  setUsername: (value: string) => void;
 };
 
 const AuthContext = createContext<AuthContextType>({
   isAuthenticated: false,
   loading: true,
   userName: "",
-  setAuth: () => {}
+  setAuth: () => {},
+  setUsername: () => {}
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -37,9 +39,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         );
 
         const user = await data.json()
-        setUserName(user)
         if (data.ok) {
           setIsAuthenticated(true);
+          setUserName(user)
+
         }
       } catch (err) {
         console.error("Auth check failed", err);
@@ -48,6 +51,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setLoading(false); 
       }
     };
+
     fetchLoginStatus();
   }, []);
 
@@ -57,7 +61,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, loading, userName, setAuth: setIsAuthenticated}}>
+    <AuthContext.Provider value={{ isAuthenticated, loading, userName, setAuth: setIsAuthenticated, setUsername: setUserName}}>
       {children}
     </AuthContext.Provider>
   );
