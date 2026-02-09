@@ -17,7 +17,7 @@ A full-stack multiplayer Jeopardy game application with real-time buzzer functio
 - WebSocket support for real-time gameplay
 - RESTful API architecture
 
-## 📋 Features
+## Features
 
 - **User Authentication**: Secure login and signup system with session management
 - **Board Creation & Editing**: Create custom Jeopardy boards with categories and questions
@@ -27,7 +27,7 @@ A full-stack multiplayer Jeopardy game application with real-time buzzer functio
 - **Protected Routes**: Secure access to authenticated features
 - **User Profiles**: Personal user pages and game history
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
