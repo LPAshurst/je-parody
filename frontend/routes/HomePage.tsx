@@ -52,7 +52,7 @@ export default function HomePage() {
     return (
         <div className="home-container">
             <div className="hero-section">
-                <h1 className="title">Jeopardy!</h1>
+                <h1 className="title">Je-parody</h1>
                 <p className="subtitle">Test your knowledge. Challenge your friends.</p>
             </div>
             
@@ -67,7 +67,7 @@ export default function HomePage() {
                                 value={roomCode}
                                 onChange={(e) => setRoomCode(e.target.value)}
                                 className="room-input"
-                                maxLength={6}
+                                maxLength={4}
                             />
                             <button type="submit" className="btn btn-primary" disabled={!roomCode.trim()}>
                                 Join Game
@@ -112,7 +112,17 @@ export default function HomePage() {
                     )}
                     
                     {showBoards && boards.length === 0 && (
-                        <p className="empty-state">No boards yet. Create your first one!</p>
+                        <p className="empty-state">No boards yet.&nbsp;
+                            <a 
+                                style={{ 
+                                color: '#60a5fa', 
+                                textDecoration: 'underline',
+                                cursor: 'pointer' 
+                                }} 
+                                href="../create">Create 
+                            </a>
+                            &nbsp;your first one!
+                        </p>
                     )}
                 </div>
             </div>
