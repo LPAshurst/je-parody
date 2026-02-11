@@ -5,9 +5,10 @@ import type { Player } from "../../types";
 interface PlayBoardFooterProps {
     players: Record<string, Player>
     currPlayer: string | null | undefined,
+    handleManualPoints: (points: number, userName: string) => void
 }
 
-export default function PlayBoardFooter({players, currPlayer}: PlayBoardFooterProps) {
+export default function PlayBoardFooter({players, currPlayer, handleManualPoints}: PlayBoardFooterProps) {
     
     return (
         <div className="footer-wrapper">
@@ -18,8 +19,8 @@ export default function PlayBoardFooter({players, currPlayer}: PlayBoardFooterPr
                         <div className="player-name">{player_key}</div>
                         <div className="player-points">{players[player_key].score}</div>
                         <div className="player-manual-points">
-                            <Plus size={25} strokeWidth={2.5} color="#2da94e" onClick={() => {}} className="plus"/>
-                            <Minus size={25} strokeWidth={2.5} color="#ff0000" onClick={() => {}} className="minus"/> 
+                            <Plus size={25} strokeWidth={2.5} color="#2da94e" onClick={() => handleManualPoints(100, player_key)} className="plus"/>
+                            <Minus size={25} strokeWidth={2.5} color="#ff0000" onClick={() => handleManualPoints(-100, player_key)} className="minus"/> 
                         </div>
                     </div>
                 </div>

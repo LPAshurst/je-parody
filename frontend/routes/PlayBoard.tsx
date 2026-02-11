@@ -27,6 +27,14 @@ export default function PlayBoard() {
 
     }
 
+    function handleManualPoints(points: number, userName: string) {
+        socket.emit("manual-points", {
+            room_id: room,
+            user_name: userName,
+            amount: points
+        })
+    }
+
     function answerQuestion(response: boolean) {
         socket.emit("board_response", {
             room_id: room,
@@ -61,7 +69,7 @@ export default function PlayBoard() {
         <>
             <div className="play-area">
                 <JeopardyBoard clues={clues} handleClueClick={handleClueClick} isAnswering={currGame ? currGame.buzzer_locked : false} answerQuestion={answerQuestion} handleCloseModal={handleCloseModal}/>
-                <PlayBoardFooter players={players} currPlayer={currGame?.active_player}/>
+                <PlayBoardFooter players={players} currPlayer={currGame?.active_player} handleManualPoints={handleManualPoints}/>
             </div>
         </>
     )
