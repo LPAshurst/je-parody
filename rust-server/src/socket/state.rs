@@ -94,10 +94,10 @@ impl GameStore {
 
     }
 
-    pub async fn add_player(&self, game_id: &str, player: Player, user_name: String) -> Option<()> {
+    pub async fn add_player(&self, game_id: &str, player: Player, user_name: &str) -> Option<()> {
         let mut games = self.games.write().await;
         let game = games.get_mut(game_id)?;
-        game.players.insert(user_name, player);
+        game.players.insert(user_name.to_string(), player);
         Some(())
     }
     
@@ -141,6 +141,17 @@ impl GameStore {
         let mut games = self.games.write().await;
         let game = games.get_mut(game_id)?;
         forfeit_clue(game)
+    }
+
+
+    pub async fn update_manual_score(&self, game_id: &str, user_name: &str, amount: i32) -> Option<()> {
+        let mut games = self.games.write().await;
+        let game = games.get_mut(game_id)?;
+
+        if let Some(player) = game.players.get_mut(user_name) {
+            player.score += amount;
+        }
+        Some(())
     }
 
 

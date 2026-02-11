@@ -10,6 +10,13 @@ struct JoinGameData {
     user_name: String,
 }
 
+#[derive(Deserialize, Debug)]
+struct ManualIncrementData {
+    room_id: String,
+    user_name: String,
+    amount: i32
+}
+
 #[derive(Deserialize, Debug, serde::Serialize)]
 struct StartGameData {
     room_id: String,
@@ -37,7 +44,7 @@ async fn join_game(s: SocketRef, Data(game_data): Data<JoinGameData>, store: Sta
             score: 0, 
             has_answered: false
         },
-        game_data.user_name.to_string()
+        &game_data.user_name
 
     ).await;
     let _ = s.to(game_data.room_id.clone()).emit("user-joined", &game_data.user_name).await;
@@ -101,6 +108,8 @@ pub async fn on_game_connect(socket: SocketRef) {
 
     socket.on("rejoin-room", rejoin_room);
 
+    socket.on("manual-points", handle_manual_points)
+
     // socket.on("submit_answer", handle_submit_answer);
     // socket.on("start_round", handle_start_round);
     // socket.on("select_clue", handle_select_clue);
@@ -134,4 +143,12 @@ async fn handle_board_response(s: SocketRef, Data(response_data): Data<ResponseD
 
     store.update_score(&response_data.room_id, response_data.correct_response).await;
     update_game(s, store, &response_data.room_id).await;
+
+}
+
+async fn handle_manual_points(s: SocketRef, Data(response_data): Data<ManualIncrementData>, store: State<state::GameStore>) {
+
+    store.update_manual_score(&response_data.room_id, &response_data.user_name, response_data.amount).await;
+    update_game(s, store, &response_data.room_id).await;
+
 }
