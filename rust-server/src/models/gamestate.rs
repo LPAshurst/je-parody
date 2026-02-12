@@ -1,27 +1,7 @@
 use std::{collections::HashMap, sync::Arc};
-use rand::Rng;
 use serde::Deserialize;
 use tokio::sync::RwLock;
-
-// Generate random room code, implementation should be fine for sparse gamelists
-fn generate_code() -> String {
-    let mut rng = rand::rng();
-
-    let code: String = (0..4)
-        .map(|_| {
-            let idx: u8 = rng.random_range(0..36);
-            if idx < 10 {
-                (b'0' + idx) as char
-            } else {
-                (b'a' + (idx - 10)) as char
-            }
-        })
-        .collect();
-
-    return code;
-    
-    
-}
+use crate::socket::misc::{generate_code, forfeit_clue};
 
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct Player {
@@ -56,17 +36,6 @@ pub type GameRooms = HashMap<String, Game>;
 pub struct GameStore {
     pub games: Arc<RwLock<GameRooms>>,
 }
-
-
-fn forfeit_clue(game: &mut Game) -> Option<()> {
-    for player in game.players.values_mut() {
-        player.has_answered = false;
-    }
-    game.current_clue_position = None;
-    game.buzzer_locked = true;
-    Some(())
-}
-    
 
 impl GameStore {
     pub async fn create_game(&self) -> Game {
@@ -191,4 +160,36 @@ impl GameStore {
 
         Some(())
     }
+}
+
+
+#[derive(Deserialize, Debug)]
+pub struct JoinGameData {
+    pub room_id: String,
+    pub user_name: String,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct ManualIncrementData {
+    pub room_id: String,
+    pub user_name: String,
+    pub amount: i32
+}
+
+#[derive(Deserialize, Debug, serde::Serialize)]
+pub struct StartGameData {
+    pub room_id: String,
+    pub clues: Vec<GameClue>,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct ResponseData {
+    pub room_id: String,
+    pub correct_response: bool,
+}
+
+#[derive(Deserialize, Debug)]
+pub struct SelectedClueData {
+    pub room_id: String,
+    pub position: usize,
 }

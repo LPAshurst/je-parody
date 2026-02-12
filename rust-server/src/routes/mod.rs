@@ -14,9 +14,9 @@ use socketioxide::{
     SocketIo,
 };
 
-use crate::socket::state;
-
 use crate::socket::handlers::on_game_connect;
+
+use crate::models::gamestate::GameStore;
 
 pub fn create_router(pool: PgPool) -> Router {
     let origins = [
@@ -36,7 +36,7 @@ pub fn create_router(pool: PgPool) -> Router {
         .allow_methods([Method::GET, Method::POST, Method::OPTIONS, Method::PUT])
         .allow_headers([header::CONTENT_TYPE, header::AUTHORIZATION]);
 
-    let games = state::GameStore::default();
+    let games = GameStore::default();
 
     let (socket_layer, io) = SocketIo::builder().with_state(games).build_layer();
 
