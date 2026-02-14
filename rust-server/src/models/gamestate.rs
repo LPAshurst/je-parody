@@ -3,6 +3,13 @@ use serde::Deserialize;
 use tokio::sync::RwLock;
 use crate::socket::misc::{generate_code, forfeit_clue};
 
+#[derive(Debug)]
+pub enum GameError {
+    GameNotFound,
+    MalformedClue,
+    PlayerNotFound
+}
+
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct Player {
     pub score: i32,
@@ -54,87 +61,112 @@ impl GameStore {
     }
     
 
-    pub async fn initialize_game(&self, game_id: &str, clues: Vec<GameClue>) -> Game {
+    pub async fn initialize_game(&self, game_id: &str, clues: Vec<GameClue>) -> Option<Game> {
         let mut games = self.games.write().await;
-        let game = games.get_mut(game_id).unwrap();
-        game.clues = clues;
-
-        game.clone()
+        let game = games.get_mut(game_id);
+        if let Some(game) = game {
+            game.clues = clues;
+            Some(game.clone())
+        } else {
+            None
+        }
 
     }
 
-    pub async fn add_player(&self, game_id: &str, player: Player, user_name: &str) -> Option<()> {
+    pub async fn add_player(&self, game_id: &str, player: Player, user_name: &str) -> Result<(), GameError>  {
         let mut games = self.games.write().await;
-        let game = games.get_mut(game_id)?;
-        game.players.insert(user_name.to_string(), player);
-        Some(())
+        let game = games.get_mut(game_id);
+        if let Some(game) = game {
+            game.players.insert(user_name.to_string(), player);
+            return Ok(());
+        }
+        Err(GameError::GameNotFound)
     }
     
     pub async fn get_game(&self, game_id: &str) -> Option<Game> {
         self.games.read().await.get(game_id).cloned()
     }
 
-    pub async fn select_clue(&self, game_id: &str, clue_position: usize) -> Option<()>{
+    pub async fn select_clue(&self, game_id: &str, clue_position: usize) -> Result<(), GameError>  {
 
         let mut games = self.games.write().await;
-        let game = games.get_mut(game_id)?;
+        let game = games.get_mut(game_id);
 
-        if clue_position >= game.clues.len() {
-            return None;
+        if let Some(game) = game {
+            if clue_position >= game.clues.len() {
+                return Err(GameError::MalformedClue);
+            }
+
+            if game.clues[clue_position].answered {
+                return Err(GameError::MalformedClue);
+            }
+
+            game.current_clue_position = Some(clue_position);
+            game.buzzer_locked = false;
+            return Ok(())
         }
+        return Err(GameError::GameNotFound);
 
-        if game.clues[clue_position].answered {
-            return None;
-        }
-
-        game.current_clue_position = Some(clue_position);
-        game.buzzer_locked = false;
-
-        Some(())
     }
     
-    pub async fn buzz_in(&self, game_id: &str, user_name: &str) -> Option<()> {
+    pub async fn buzz_in(&self, game_id: &str, user_name: &str) -> Result<(), GameError>  {
         let mut games = self.games.write().await;
-        let game = games.get_mut(game_id)?;
-        
-        if game.buzzer_locked {
-            return None;
+        let game = games.get_mut(game_id);
+        if let Some(game) = game {
+
+            if game.buzzer_locked {
+                return Ok(())
+            }
+            
+            game.active_player = Some(user_name.to_string());
+            game.buzzer_locked = true;
+            return Ok(())
+        }
+        return Err(GameError::GameNotFound);
+    }
+
+    pub async fn close_clue(&self, game_id: &str) ->  Result<(), GameError>{
+        let mut games = self.games.write().await;
+        let game = games.get_mut(game_id);
+
+        if let Some(game) = game {
+            forfeit_clue(game);
+            Ok(())
+        } else {
+            return Err(GameError::GameNotFound);
         }
         
-        game.active_player = Some(user_name.to_string());
-        game.buzzer_locked = true;
-        Some(())
-    }
-
-    pub async fn close_clue(&self, game_id: &str) -> Option<()> {
-        let mut games = self.games.write().await;
-        let game = games.get_mut(game_id)?;
-        forfeit_clue(game)
     }
 
 
-    pub async fn update_manual_score(&self, game_id: &str, user_name: &str, amount: i32) -> Option<()> {
+    pub async fn update_manual_score(&self, game_id: &str, user_name: &str, amount: i32) -> Result<(), GameError>{
         let mut games = self.games.write().await;
-        let game = games.get_mut(game_id)?;
-
-        if let Some(player) = game.players.get_mut(user_name) {
-            player.score += amount;
+        let game = games.get_mut(game_id);
+        if let Some(game) = game {
+            if let Some(player) = game.players.get_mut(user_name) {
+                player.score += amount;
+            } else {
+                return Err(GameError::PlayerNotFound);
+            }
+           Ok(())
+        } else {
+            Err(GameError::GameNotFound)
         }
-        Some(())
+
     }
 
 
 
-    pub async fn update_score(&self, game_id: &str, correct_response: bool) -> Option<()> {
+    pub async fn update_score(&self, game_id: &str, correct_response: bool) -> Result<(), GameError> {
         let mut games = self.games.write().await;
-        let game = games.get_mut(game_id)?;
+        let game = games.get_mut(game_id).ok_or(GameError::GameNotFound)?;
         
-        let clue_position = game.current_clue_position?;
-        let clue = game.clues.get_mut(clue_position)?;
+        let clue_position = game.current_clue_position.ok_or(GameError::MalformedClue)?;
+        let clue = game.clues.get_mut(clue_position).ok_or(GameError::MalformedClue)?;
         let clue_value = clue.clue_val;
 
         if let Some(player_name) = &game.active_player {
-            let player = game.players.get_mut(player_name).unwrap();
+            let player = game.players.get_mut(player_name).ok_or(GameError::PlayerNotFound)?;
 
             if correct_response {
                 player.score += clue_value;
@@ -157,8 +189,7 @@ impl GameStore {
         }
         
         game.active_player = None;
-
-        Some(())
+        Ok(())
     }
 }
 
