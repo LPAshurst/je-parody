@@ -48,7 +48,7 @@ export default function ClueCell({ clue, onClick }: ClueCellProps) {
     return (
         <div className={`${hoverClass} cell-wrapping`} onClick={onClick}>
             <div className="edit-cell">
-                <div className={`${hoverClass} cell-front`}>
+                <div className={`${hoverClass} cell-front`} style={{borderColor: clue.daily_double ? "#d4af37" : ""}}>
                     <MediaOrText 
                         processedContent={processedClue} 
                         fallbackText={displayText}

@@ -123,7 +123,7 @@ export default function EditBoard() {
                         {isSaved ? '✅ Saved' : '● Unsaved changes'}
                     </div>
                     <button 
-                        onClick={() => saveBoard(clues, boardTitle)} // need to update so we can actually save the full board when changing things
+                        onClick={() => saveBoard(clues, boardTitle)} 
                         className="btn-save"
                         disabled={isSaved}
                     >
