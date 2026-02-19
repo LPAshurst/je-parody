@@ -29,11 +29,11 @@ export default function JeopardyBoard({
 }: JeopardyProps) {
 
 
-    const categories = [...new Set(clues.map(clue => clue.category))]
-       
-    const fixedCategories = categories.length !== 1 ? categories : Array(6).fill("Enter title here")
+    const initialCategories = Array.from({ length: 6 }, (_, col) =>
+        clues[col]?.category ?? ""
+    );
 
-    const [displayCategories, setDisplayCategories] = useState(fixedCategories);
+    const [displayCategories, setDisplayCategories] = useState(initialCategories);
 
 
     function updateCategory(cat: string, col: number) {
