@@ -17,6 +17,7 @@ export default function TextEditor({ selectedClue, onSave, onClose }: TextEditor
     const [answerText, setAnswerText] = useState('');
     const clueRef = useRef<ReactQuill>(null);
     const answerRef = useRef<ReactQuill>(null);
+    const [isDailyDouble, setIsDailyDouble] = useState(selectedClue?.daily_double);
 
     useEffect(() => {
         if (selectedClue) {
@@ -113,6 +114,24 @@ export default function TextEditor({ selectedClue, onSave, onClose }: TextEditor
             </div>
 
             <div className="modal-actions">
+                <button
+                    className={`daily-double-toggle ${isDailyDouble ? 'active' : ''}`}
+                    onClick={() => {
+                        const tmpPrev = !isDailyDouble
+                        setIsDailyDouble(tmpPrev)
+                        if (selectedClue) {
+                            selectedClue.daily_double = tmpPrev
+                        }
+                    }}
+                    type="button"
+                    aria-pressed={isDailyDouble}
+                    title="Mark as Daily Double"
+                >
+                    <svg className="star-icon" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                    </svg>
+                    Daily Double
+                </button>
                 <button onClick={onClose}>Cancel</button>
                 <button onClick={handleSave}>Save</button>
             </div>

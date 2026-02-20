@@ -1,0 +1,156 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500&display=swap');
+
+/* ── Splash screen ───────────────────────────────────── */
+.dd-modal {
+    position: fixed;
+    background-color: #00309e;
+    color: white;
+    display: flex;
+    align-items: center;
+    z-index: 9999;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.dd-splash {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+    background: radial-gradient(ellipse at center, #0a1f5c 0%, #00309e 50%, #001a6e 100%);
+    position: relative;
+    animation: dd-bg-pulse 3s ease-in-out infinite;
+}
+
+@keyframes dd-bg-pulse {
+    0%, 100% { background-size: 100% 100%; }
+    50% { background-size: 110% 110%; }
+}
+
+/* Gold shimmer overlay */
+.dd-splash::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+        radial-gradient(ellipse at 50% 50%, rgba(212, 175, 55, 0.12) 0%, transparent 70%);
+    pointer-events: none;
+    animation: dd-shimmer 2.5s ease-in-out infinite;
+}
+
+@keyframes dd-shimmer {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+}
+
+.dd-stars-row {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.dd-splash-star {
+    width: 2rem;
+    height: 2rem;
+    color: #d4af37;
+    filter: drop-shadow(0 0 8px rgba(212, 175, 55, 0.9));
+    animation: dd-star-pop 0.5s cubic-bezier(0.16, 1, 0.3, 1) both, dd-star-pulse 2s ease-in-out infinite 0.5s;
+}
+
+@keyframes dd-star-pop {
+    from { opacity: 0; transform: scale(0) rotate(-30deg); }
+    to   { opacity: 1; transform: scale(1) rotate(0deg); }
+}
+
+@keyframes dd-star-pulse {
+    0%, 100% { filter: drop-shadow(0 0 6px rgba(212, 175, 55, 0.7)); }
+    50%       { filter: drop-shadow(0 0 16px rgba(212, 175, 55, 1)); }
+}
+
+.dd-splash-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(4rem, 12vw, 9rem);
+    font-weight: 900;
+    color: #d4af37;
+    text-shadow:
+        0 0 40px rgba(212, 175, 55, 0.8),
+        0 0 80px rgba(212, 175, 55, 0.4),
+        0 4px 20px rgba(0, 0, 0, 0.5);
+    letter-spacing: 0.02em;
+    line-height: 1;
+    animation: dd-title-enter 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+    animation-delay: 0.2s;
+}
+
+@keyframes dd-title-enter {
+    from {
+        opacity: 0;
+        transform: scale(0.7) translateY(20px);
+        letter-spacing: 0.3em;
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+        letter-spacing: 0.02em;
+    }
+}
+
+.dd-splash-category {
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(1rem, 3vw, 2rem);
+    font-weight: 300;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.6);
+    animation: dd-fade-up 0.5s ease both;
+    animation-delay: 0.5s;
+}
+
+@keyframes dd-fade-up {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Waiting line — hidden until phase === waiting */
+.dd-waiting-line {
+    font-family: 'DM Sans', sans-serif;
+    font-size: clamp(1rem, 2.5vw, 1.6rem);
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0);
+    letter-spacing: 0.03em;
+    text-align: center;
+    min-height: 2rem;
+}
+
+.dd-waiting-line--visible {
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.dd-player-name {
+    color: #d4af37;
+    font-weight: 600;
+    text-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
+}
+
+/* ── Question phase ──────────────────────────────────── */
+.dd-question-content {
+    animation: dd-question-enter 0.8s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes dd-question-enter {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.dd-header-wager {
+    color: #d4af37;
+    text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+}
+
+/* ── Reuse existing modal classes from ExpandingQuestionModal ── */
+/* (modal, expanded, expanding-modal-header, play-modal-content,  */
+/*  play-modal-clue, play-modal-response, play-header-title,       */
+/*  option, kbd are all inherited from ExpandingQuestionModal.css) */

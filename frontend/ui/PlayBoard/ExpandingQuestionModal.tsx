@@ -62,7 +62,7 @@ export default function ExpandingQuestionModal({onClose, clue, isAnswering, answ
                 <div className="continue-button">
                     Continue <kbd style={{"marginLeft": ".5rem", "padding": ".05em .6em", "borderRadius": "3px", "lineHeight": "1.4", "fontSize": "larger"}}>ESC</kbd>
                 </div>
-                <div className="header-title">{clue.category} for {clue.clue_val}</div>
+                <div className="play-header-title">{clue.category} for {clue.clue_val}</div>
                 <div className="header-options">
                     <div className="option">
                         Press <kbd>enter</kbd> if the answer is <span style={{"color": "green"}}>correct</span>

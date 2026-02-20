@@ -1,27 +1,34 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { socket, rejoinRoom } from "../src/socket";
+import { useSocket } from "../context/SocketContext";
 import { UseAuth } from "../context/AuthContext";
 import "../styles/WaitingRoom.css";
 import { useEffect, useState } from "react";
-import type { Game, Player } from "../types";
+import type { Game } from "../types";
 
 export default function WaitingRoom() {
     const navigate = useNavigate();
     const auth = UseAuth();
     const { room } = useParams();
-    const [players, setPlayers] = useState<Record<string, Player>>({});
+    const {socket, rejoinRoom} = useSocket();
+    const [players, setPlayers] = useState<string[]>([]);
 
+    const onUserJoined = (userName: string) => {
+        console.log(userName)
+        setPlayers(prev => [...prev, userName]);
+    };
     useEffect(() => {
 
         if (room) {
             rejoinRoom(room);
         }
-
-        socket.on("get-state", (game: Game) => {
-            setPlayers(game.players)
-        })
+        socket.emit("ask-for-state", room)
+        socket.on("get-state", (game: Game) => setPlayers([...Object.keys(game.players)]))
+        socket.on("user-joined", onUserJoined);
+        socket.on("leave-room",  (_str) => {console.log("here"); {navigate("/home")}})
 
         return () => {
+            socket.off("user-joined", onUserJoined);
+            socket.off("leave-room")
             socket.off("get-state")
         }
 
@@ -66,10 +73,10 @@ export default function WaitingRoom() {
             </div>
             
             <div className="players-grid">
-                {Object.keys(players).map((player, index) => (
+                {players.map((player, index) => (
                 <div key={index} className="player-card">
                     <div className="player-avatar">
-                    {player.charAt(0).toUpperCase()}
+                    {index}
                     </div>
                     <div className="player-info">
                     <span className="player-name">{player}</span>

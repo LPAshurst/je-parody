@@ -100,6 +100,7 @@
 }
 
 
+
 /* toolbar */
 .ql-toolbar.ql-snow {
   display: flex;
@@ -210,6 +211,51 @@
 .modal-actions button:last-child:active {
   transform: translateY(0);
 }
+
+
+.daily-double-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.9rem 0.4rem 0.7rem !important;
+  background: transparent !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  color: rgba(255, 255, 255, 0.35) !important;
+  border-radius: 0.35rem;
+  cursor: pointer;
+  transition: all 0.2s ease !important;
+  letter-spacing: 0.08em;
+}
+
+.daily-double-toggle:hover {
+  border-color: rgba(212, 175, 55, 0.4) !important;
+  color: rgba(212, 175, 55, 0.7) !important;
+  background: rgba(212, 175, 55, 0.05) !important;
+}
+
+.daily-double-toggle.active {
+  background: rgba(212, 175, 55, 0.12) !important;
+  border-color: rgba(212, 175, 55, 0.6) !important;
+  color: #d4af37 !important;
+  box-shadow: 0 0 12px rgba(212, 175, 55, 0.15);
+}
+
+.star-icon {
+  width: 0.95rem;
+  height: 0.95rem;
+  transition: transform 0.2s ease, filter 0.2s ease;
+  flex-shrink: 0;
+}
+
+.daily-double-toggle:hover .star-icon {
+  transform: scale(1.15);
+}
+
+.daily-double-toggle.active .star-icon {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.7));
+}
+
 
 @media (max-width: 1035px), (max-height: 500px) {
   .editing-modal {

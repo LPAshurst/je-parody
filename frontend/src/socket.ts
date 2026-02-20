@@ -21,7 +21,6 @@ export function rejoinRoom(roomId: string, userName?: string) {
     currentUserName = userName;
   }
   
-  console.log('Joining room:', roomId, 'as', userName || currentUserName || 'Guest');
   
   socket.emit('rejoin-room', currentRoom)
 }

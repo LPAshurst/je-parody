@@ -7,13 +7,16 @@ use crate::socket::misc::{generate_code, forfeit_clue};
 pub enum GameError {
     GameNotFound,
     MalformedClue,
-    PlayerNotFound
+    PlayerNotFound,
+    PlayerExists
 }
 
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct Player {
     pub score: i32,
-    pub has_answered: bool
+    pub has_answered: bool,
+    pub wager: i32,
+    pub wagered: bool,
 }
 
 #[derive(Clone, Debug, serde::Serialize)]
@@ -23,18 +26,19 @@ pub struct Game {
     pub current_clue_position: Option<usize>,
     pub active_player: Option<String>,
     pub buzzer_locked: bool,
-    pub clues: Vec<GameClue>
+    pub clues: Vec<GameClue>,
+    pub player_picking_category: Option<String>
 }
 
 #[derive(Clone, Debug, Deserialize, serde::Serialize)]
 pub struct GameClue {
-
     pub position: usize,
     pub clue: String,
     pub response: String,
     pub category: String,
     pub answered: bool,
-    pub clue_val: i32  
+    pub clue_val: i32,
+    pub daily_double: bool
 }
 
 pub type GameRooms = HashMap<String, Game>;
@@ -53,19 +57,30 @@ impl GameStore {
             current_clue_position: None,
             active_player: None,
             buzzer_locked: true,
-            clues: Vec::new()
+            clues: Vec::new(),
+            player_picking_category: None
         };
         
         self.games.write().await.insert(code, game.clone());
         game
     }
+
+
+    pub async fn delete_game(&self, room_id: &str) -> Result<(), GameError>  {
+        let mut games = self.games.write().await;
+        games.remove(room_id)
+            .map(|_| ())
+            .ok_or(GameError::GameNotFound)
+    }
     
 
-    pub async fn initialize_game(&self, game_id: &str, clues: Vec<GameClue>) -> Option<Game> {
+    pub async fn initialize_game(&self, game_id: &str, clues: Vec<GameClue>, player_picking_category: String) -> Option<Game> {
+        println!("here in init");
         let mut games = self.games.write().await;
         let game = games.get_mut(game_id);
         if let Some(game) = game {
             game.clues = clues;
+            game.player_picking_category = Some(player_picking_category);
             Some(game.clone())
         } else {
             None
@@ -77,6 +92,10 @@ impl GameStore {
         let mut games = self.games.write().await;
         let game = games.get_mut(game_id);
         if let Some(game) = game {
+
+            if game.players.contains_key(user_name) {
+                return Err(GameError::PlayerExists)
+            }
             game.players.insert(user_name.to_string(), player);
             return Ok(());
         }
@@ -87,22 +106,26 @@ impl GameStore {
         self.games.read().await.get(game_id).cloned()
     }
 
-    pub async fn select_clue(&self, game_id: &str, clue_position: usize) -> Result<(), GameError>  {
+    pub async fn select_clue(&self, selected_clue_data: &SelectedClueData) -> Result<(), GameError>  {
 
         let mut games = self.games.write().await;
-        let game = games.get_mut(game_id);
+        let game = games.get_mut(&selected_clue_data.room_id);
 
         if let Some(game) = game {
-            if clue_position >= game.clues.len() {
+            if selected_clue_data.position >= game.clues.len() {
                 return Err(GameError::MalformedClue);
             }
 
-            if game.clues[clue_position].answered {
+            if game.clues[selected_clue_data.position].answered {
                 return Err(GameError::MalformedClue);
             }
 
-            game.current_clue_position = Some(clue_position);
-            game.buzzer_locked = false;
+            game.current_clue_position = Some(selected_clue_data.position);
+            if !selected_clue_data.daily_double {
+                game.buzzer_locked = false;
+            } else {
+                game.buzzer_locked = true;
+            }
             return Ok(())
         }
         return Err(GameError::GameNotFound);
@@ -155,6 +178,54 @@ impl GameStore {
 
     }
 
+    pub async fn store_wager(&self, daily_double_wager: &DailyDoubleWager) -> Result<(), GameError>  {
+        let mut games = self.games.write().await;
+        let game = games.get_mut(&daily_double_wager.room_id).ok_or(GameError::GameNotFound)?;
+
+        if let Some(player_name) = &game.player_picking_category {
+            let player = game.players.get_mut(player_name).ok_or(GameError::PlayerNotFound)?;
+            let max_wager = std::cmp::min(daily_double_wager.wager, 1000);
+            player.wager = max_wager;
+            player.wagered = true;
+        }
+        Ok(())
+    }
+
+    pub async fn consume_wager(&self, game_id: &str, correct_response: bool) -> Result<(), GameError>  {
+        let mut games = self.games.write().await;
+        let game = games.get_mut(game_id).ok_or(GameError::GameNotFound)?;
+        
+        let clue_position = game.current_clue_position.ok_or(GameError::MalformedClue)?;
+        let clue = game.clues.get_mut(clue_position).ok_or(GameError::MalformedClue)?;
+
+        if let Some(player_name) = &game.player_picking_category {
+            let player = game.players.get_mut(player_name).ok_or(GameError::PlayerNotFound)?;
+            println!("{}", player.wager);
+            if correct_response {
+                player.score += player.wager;
+                println!("{}", player.score);
+
+            } else {
+                player.score -= player.wager;
+                println!("{}", player.score);
+
+            }
+            player.wager = 0;
+            player.wagered = false;
+
+                    // sanity check reset
+            for player in game.players.values_mut() {
+                player.has_answered = false;
+            }
+            game.buzzer_locked = true;
+            clue.answered = true;
+            game.active_player = None;
+            Ok(())
+        } else {
+            Err(GameError::PlayerNotFound)
+        }
+
+    }
 
 
     pub async fn update_score(&self, game_id: &str, correct_response: bool) -> Result<(), GameError> {
@@ -177,6 +248,7 @@ impl GameStore {
                 for player in game.players.values_mut() {
                     player.has_answered = false;
                 }
+                game.player_picking_category = Some(player_name.to_string());
             } else {
                 player.score -= clue_value;
                 game.buzzer_locked = false;
@@ -211,6 +283,7 @@ pub struct ManualIncrementData {
 pub struct StartGameData {
     pub room_id: String,
     pub clues: Vec<GameClue>,
+    pub player_picking_category: String,
 }
 
 #[derive(Deserialize, Debug)]
@@ -223,4 +296,11 @@ pub struct ResponseData {
 pub struct SelectedClueData {
     pub room_id: String,
     pub position: usize,
+    pub daily_double: bool
+}
+
+#[derive(Deserialize, Debug)]
+pub struct DailyDoubleWager {
+    pub room_id: String,
+    pub wager: i32
 }

@@ -8,9 +8,11 @@ interface RoomCreationModalProps {
     boardName: string,
     makingRoom: boolean,
     players: string[],
+    firstPlayer: string,
     roomCode: string,
     createRoom: () => void,
     cancelRoom: () => void,
+    setFirstPlayer: (player: string) => void;
 
 }
 export default function RoomCreationModal(
@@ -21,13 +23,14 @@ export default function RoomCreationModal(
         boardName, 
         makingRoom, 
         players, 
+        firstPlayer,
         roomCode,
         createRoom,
-        cancelRoom
+        cancelRoom,
+        setFirstPlayer
     }: RoomCreationModalProps
 ) {
     
-    console.log(makingRoom)
     return (
         <Modal
         open={isOpen}
@@ -77,8 +80,9 @@ export default function RoomCreationModal(
                                 <div className="joined-player">
                                     {players.length > 0 ? (
                                         players.map((player, index) => (
-                                            <div className="joined-player-box" key={index}>
+                                            <div className="joined-player-box" key={index} onClick={() => {setFirstPlayer(player)}}>
                                                 <div className="joined-player-name">{player}</div>
+                                                    {firstPlayer === player && <span style={{ marginLeft: 'auto' }}>👑</span>}
                                             </div>
                                         ))
                                     ) : (

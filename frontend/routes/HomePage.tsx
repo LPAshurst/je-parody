@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import type { Board } from "../types";
-import { socket } from "../src/socket"
+import { useSocket } from "../context/SocketContext";
 import { UseAuth } from "../context/AuthContext"
 import "../styles/HomePage.css";
 
@@ -11,7 +11,7 @@ export default function HomePage() {
     const [roomCode, setRoomCode] = useState<string>("");
     const [isLoading, setIsLoading] = useState(false);
     const [showBoards, setShowBoards] = useState(false);
-    
+    const {socket} = useSocket();
     const auth = UseAuth();
         
     async function getBoards() {
@@ -38,13 +38,12 @@ export default function HomePage() {
     
     function handleJoinGame(e: React.FormEvent) {
         e.preventDefault();
-        console.log(auth.userName)
         if (roomCode.trim()) {
             socket.emit("join-game", {
                 room_id: roomCode.trim().toLowerCase(), 
                 user_name: auth.userName
             });
-            navigate(`/waiting-room/${roomCode}`)
+            navigate(`/waiting-room/${roomCode.trim().toLowerCase()}`)
             setRoomCode("");
         }
     }

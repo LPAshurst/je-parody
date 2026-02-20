@@ -46,7 +46,6 @@ export default function EditBoard() {
                 return;
             } else {
                 const data: Board = await res.json();
-                console.log(data)
                 setBoardTitle(data.title)
                 setClues(data.clues);
                 setBoardKey(prev => prev + 1); // also needed to refresh state
@@ -123,7 +122,7 @@ export default function EditBoard() {
                         {isSaved ? '✅ Saved' : '● Unsaved changes'}
                     </div>
                     <button 
-                        onClick={() => saveBoard(clues, boardTitle)} // need to update so we can actually save the full board when changing things
+                        onClick={() => saveBoard(clues, boardTitle)} 
                         className="btn-save"
                         disabled={isSaved}
                     >
