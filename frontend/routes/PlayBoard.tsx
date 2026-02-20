@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import type { PlayClue, Game, Player } from "../types";
 import JeopardyBoard from "../ui/PlayBoard/PlayJeopardyBoard";
 import PlayBoardFooter from "../ui/PlayBoard/PlayBoardFooter"
-import { socket, rejoinRoom } from "../src/socket";
+import { useSocket } from "../context/SocketContext";
+
 
 export default function PlayBoard() {
     
@@ -12,8 +13,9 @@ export default function PlayBoard() {
     const [clues, setClues] = useState<PlayClue[]>([]);
     const [currGame, setGame] = useState<Game>();
     const [players, setPlayers] = useState<Record<string, Player>>({});
-
-    console.log(players)
+    const [dailyDouble, setDailyDouble] = useState(false);
+    const { socket, rejoinRoom } = useSocket();
+    
     function handleClueClick(clue: PlayClue) {
         socket.emit("select-clue", {
             room_id: room,
@@ -36,10 +38,18 @@ export default function PlayBoard() {
     }
 
     function answerQuestion(response: boolean) {
-        socket.emit("board_response", {
-            room_id: room,
-            correct_response: response
-        })
+        if (dailyDouble) {
+            socket.emit("answer_daily_double", {
+                room_id: room,
+                correct_response: response
+            })
+        } else {
+            socket.emit("board_response", {
+                room_id: room,
+                correct_response: response
+            })
+        }
+
     }
 
     useEffect(() => {
@@ -57,6 +67,9 @@ export default function PlayBoard() {
             setClues(game.clues)
             console.log(game)
             setPlayers(game.players)
+            if (game.current_clue_position) {
+                setDailyDouble(game.clues[game.current_clue_position].daily_double)
+            }
         })
 
         return () => {

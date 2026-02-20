@@ -9,7 +9,7 @@ export interface Board {
 export interface Game {
   code: string;
   players: Record<string, Player>;
-  current_clue: string | null;
+  current_clue_position: number | null;
   active_player: string | null;
   buzzer_locked: boolean;
   clues: PlayClue[];
@@ -18,6 +18,8 @@ export interface Game {
 export interface Player {
   score: number;
   has_answered: boolean;
+  wager: number;
+  wagered: boolean;
 }
 
 export interface Clue {
@@ -39,6 +41,7 @@ export interface PlayClue {
   category: string;
   answered: boolean;
   clue_val: number;
+  daily_double: boolean;
 }
 
 export interface ExternalClue {

@@ -1,6 +1,7 @@
 import { type PlayClue } from "../../types";
 import "../../styles/PlayBoard/PlayClueCell.css";
 import ExpandingQuestionModal from "./ExpandingQuestionModal";
+import DailyDoubleModal from "./DailyDoubleModal";
 import { useState } from "react";
 
 interface ClueCellProps {
@@ -18,11 +19,24 @@ export default function ClueCell({ clue, handleClick, isAnswering, answerQuestio
         setIsOpen(true);    
         handleClick();       
     };
+    
 
     return (
         <>
-            {isOpen && (
+            {isOpen && !clue.daily_double &&  (
                 <ExpandingQuestionModal
+                    answerQuestion={answerQuestion}
+                    isAnswering={isAnswering}
+                    onClose={() => {
+                        setIsOpen(false)
+                        handleCloseModal()
+                    }}
+                    clue={clue}
+                />
+            )}
+
+            {isOpen && clue.daily_double &&  (
+                <DailyDoubleModal
                     answerQuestion={answerQuestion}
                     isAnswering={isAnswering}
                     onClose={() => {

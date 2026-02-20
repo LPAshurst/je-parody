@@ -1,0 +1,259 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@300;400;500;600&display=swap');
+
+.wager-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  animation: wager-enter 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes wager-enter {
+  from {
+    opacity: 0;
+    transform: translateY(24px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ── Card ─────────────────────────────────────────── */
+.wager-card {
+  background: #0e1621;
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 1rem;
+  padding: 2rem 2.25rem;
+  width: 100%;
+  max-width: 400px;
+  box-shadow:
+    0 0 0 1px rgba(212, 175, 55, 0.1),
+    0 0 50px rgba(212, 175, 55, 0.08),
+    0 24px 60px rgba(0, 0, 0, 0.6);
+  font-family: 'DM Sans', sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+/* ── Header ───────────────────────────────────────── */
+.wager-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  color: #d4af37;
+  text-shadow: 0 0 20px rgba(212, 175, 55, 0.5);
+  letter-spacing: 0.04em;
+}
+
+.wager-star {
+  width: 1.1rem;
+  height: 1.1rem;
+  color: #d4af37;
+  filter: drop-shadow(0 0 4px rgba(212, 175, 55, 0.7));
+  flex-shrink: 0;
+}
+
+/* ── Score row ────────────────────────────────────── */
+.wager-score-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.6rem 0.85rem;
+  background: rgba(255, 255, 255, 0.04);
+  border-radius: 0.4rem;
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.wager-score-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.wager-score-value {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #dce9f0;
+}
+
+/* ── Big amount display ───────────────────────────── */
+.wager-amount-display {
+  text-align: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 3rem;
+  font-weight: 700;
+  color: #d4af37;
+  text-shadow: 0 0 30px rgba(212, 175, 55, 0.4);
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+
+/* ── Slider ───────────────────────────────────────── */
+.wager-slider-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.wager-bound {
+  font-size: 0.68rem;
+  color: rgba(255, 255, 255, 0.3);
+  white-space: nowrap;
+  min-width: 2rem;
+  letter-spacing: 0.04em;
+}
+
+.wager-bound:last-child {
+  text-align: right;
+}
+
+.wager-slider-track {
+  position: relative;
+  flex: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+}
+
+.wager-slider-fill {
+  position: absolute;
+  left: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #b8921e, #d4af37);
+  border-radius: 999px;
+  pointer-events: none;
+  transition: width 0.05s linear;
+}
+
+.wager-slider {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  margin: 0;
+  /* expanded hit area */
+  top: -10px;
+  height: 26px;
+}
+
+/* Custom thumb via a pseudo-sibling trick — we layer a visible thumb on top */
+.wager-slider-track::after {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  background: #d4af37;
+  border-radius: 50%;
+  border: 2px solid #0e1621;
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.6);
+  pointer-events: none;
+  /* driven by JS via --thumb-percent custom property on the track */
+  left: calc(var(--thumb-percent, 0%) - 9px);
+  transition: left 0.05s linear;
+}
+
+/* ── Custom input ─────────────────────────────────── */
+.wager-input-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.wager-input-label {
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.wager-input-wrapper {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 0.4rem;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+}
+
+.wager-input-wrapper:focus-within {
+  border-color: rgba(212, 175, 55, 0.5);
+  box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.08);
+}
+
+.wager-input-wrapper.error,
+.wager-input-wrapper:has(.wager-input.error) {
+  border-color: rgba(255, 80, 80, 0.6);
+}
+
+.wager-input-prefix {
+  padding: 0 0.5rem 0 0.75rem;
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 0.9rem;
+  user-select: none;
+}
+
+.wager-input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #dce9f0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.95rem;
+  padding: 0.5rem 0.75rem 0.5rem 0;
+}
+
+.wager-input::-webkit-inner-spin-button,
+.wager-input::-webkit-outer-spin-button {
+  opacity: 0.3;
+}
+
+.wager-error {
+  font-size: 0.7rem;
+  color: #ff6b6b;
+  letter-spacing: 0.03em;
+}
+
+/* ── Submit ───────────────────────────────────────── */
+.wager-submit {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  background: linear-gradient(135deg, #b8921e 0%, #d4af37 50%, #c8a030 100%);
+  color: #0b111a;
+  box-shadow: 0 2px 16px rgba(212, 175, 55, 0.35);
+  transition: all 0.18s ease;
+}
+
+.wager-submit:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 24px rgba(212, 175, 55, 0.5);
+  filter: brightness(1.08);
+}
+
+.wager-submit:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.wager-submit:disabled {
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.3);
+  box-shadow: none;
+  cursor: not-allowed;
+}

@@ -44,7 +44,6 @@ export default function JeopardyBoard({
         const updatedClues: Clue[] = clues.map((c, ix) => 
             {
                 if (col == ix % 6){
-                    console.log()
                     c.category = cat;
                 }
                 return c

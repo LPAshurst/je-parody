@@ -27,7 +27,6 @@ export default function RoomCreationModal(
     }: RoomCreationModalProps
 ) {
     
-    console.log(makingRoom)
     return (
         <Modal
         open={isOpen}

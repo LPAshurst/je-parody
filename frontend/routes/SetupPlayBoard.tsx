@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import type { Board, PlayClue } from "../types";
 import JeopardyBoard from "../ui/PlayBoard/PlayJeopardyBoard";
 import RoomCreationModal from "../ui/PlayBoard/RoomCreationModal"
-import { socket } from "../src/socket";
+import { useSocket } from "../context/SocketContext";
 import { useNavigate } from "react-router-dom";
 
 export default function SetupPlayBoard() {
@@ -15,9 +15,9 @@ export default function SetupPlayBoard() {
     const [isOpen, _setOpen] = useState(true);
     const [boardName, setBoardName] = useState("");
     const [players, setPlayers] = useState<string[]>([]);
-    const [roomCode, setroomCode] = useState("");
+    const [roomCode, setroomCode] = useState<string | undefined>("");
     const [makingRoom, setMakingRoom] = useState(false);
-    
+    const {socket} = useSocket();
 
     function createRoom() {
         if (socket.connected) {
@@ -28,7 +28,8 @@ export default function SetupPlayBoard() {
 
     function cancelRoom() {
         setMakingRoom(false)
-        socket.emit("cancel-game", roomCode)
+        socket.emit("cancel-room", roomCode)
+        setPlayers([])
     }
 
     function startGame() {
@@ -43,10 +44,9 @@ export default function SetupPlayBoard() {
         };
 
         const onUserJoined = (userName: string) => {
-            console.log(userName)
+            console.log("user joined")
             setPlayers(prev => [...prev, userName]);
         };
-
         socket.on("room-code", onRoomCode);
         socket.on("user-joined", onUserJoined);
 
@@ -70,7 +70,8 @@ export default function SetupPlayBoard() {
                     clue: clue.clue,
                     response: clue.response,
                     position: clue.position,
-                    answered: false
+                    answered: false,
+                    daily_double: clue.daily_double
                 }));
 
                 setClues(newClues);
@@ -90,7 +91,7 @@ export default function SetupPlayBoard() {
 
     return (
         <>
-            <RoomCreationModal slug={slug ? slug : ""} isOpen={isOpen} startGame={startGame} boardName={boardName} makingRoom={makingRoom} players={players} roomCode={roomCode} createRoom={createRoom} cancelRoom={cancelRoom}/>
+            <RoomCreationModal slug={slug ? slug : ""} isOpen={isOpen} startGame={startGame} boardName={boardName} makingRoom={makingRoom} players={players} roomCode={roomCode!} createRoom={createRoom} cancelRoom={cancelRoom}/>
             <div className="play-area">
                 <JeopardyBoard clues={clues} handleClueClick={() => { } } isAnswering={false} answerQuestion={() => {}} handleCloseModal={() => {}}/>
             </div>
