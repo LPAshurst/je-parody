@@ -18,6 +18,7 @@ export default function SetupPlayBoard() {
     const [roomCode, setroomCode] = useState<string | undefined>("");
     const [makingRoom, setMakingRoom] = useState(false);
     const {socket} = useSocket();
+    const [firstPlayer, setFirstPlayer] = useState("")
 
     function createRoom() {
         if (socket.connected) {
@@ -33,8 +34,10 @@ export default function SetupPlayBoard() {
     }
 
     function startGame() {
-        socket.emit("start-game", {room_id: roomCode, clues: clues})
-        navigate(`/board/${roomCode}`)
+        if (roomCode) {
+            socket.emit("start-game", {room_id: roomCode, clues: clues, player_picking_category: firstPlayer})
+            navigate(`/board/${roomCode}`)
+        }
     }
 
     useEffect(() => {
@@ -44,8 +47,11 @@ export default function SetupPlayBoard() {
         };
 
         const onUserJoined = (userName: string) => {
-            console.log("user joined")
-            setPlayers(prev => [...prev, userName]);
+            setPlayers(prev => {
+                const updated = [...prev, userName];
+                setFirstPlayer(updated[0]);
+                return updated;
+            });
         };
         socket.on("room-code", onRoomCode);
         socket.on("user-joined", onUserJoined);
@@ -91,7 +97,7 @@ export default function SetupPlayBoard() {
 
     return (
         <>
-            <RoomCreationModal slug={slug ? slug : ""} isOpen={isOpen} startGame={startGame} boardName={boardName} makingRoom={makingRoom} players={players} roomCode={roomCode!} createRoom={createRoom} cancelRoom={cancelRoom}/>
+            <RoomCreationModal slug={slug ? slug : ""} isOpen={isOpen} startGame={startGame} boardName={boardName} makingRoom={makingRoom} players={players} firstPlayer={firstPlayer} roomCode={roomCode!} createRoom={createRoom} cancelRoom={cancelRoom} setFirstPlayer={setFirstPlayer}/>
             <div className="play-area">
                 <JeopardyBoard clues={clues} handleClueClick={() => { } } isAnswering={false} answerQuestion={() => {}} handleCloseModal={() => {}}/>
             </div>

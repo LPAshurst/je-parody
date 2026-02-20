@@ -46,7 +46,6 @@ export default function EditBoard() {
                 return;
             } else {
                 const data: Board = await res.json();
-                console.log(data)
                 setBoardTitle(data.title)
                 setClues(data.clues);
                 setBoardKey(prev => prev + 1); // also needed to refresh state

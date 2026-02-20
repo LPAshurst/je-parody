@@ -31,15 +31,15 @@ export default function Buzzer() {
 
         socket.on("get-state", (game: Game) => {
             const player = game.players[auth.userName]
-
             setBuzzerLocked(game.buzzer_locked)
             setHasAnswered(player.has_answered)
             setPlayerScore(player.score)
             if (game.current_clue_position) {
                 const clue: PlayClue = game.clues[game.current_clue_position]
-                setAnsweringDailyDouble(clue.daily_double && auth.userName === game.active_player && player.wagered === false)
+                setAnsweringDailyDouble(clue.daily_double && auth.userName === game.player_picking_category && player.wagered === false && !clue.answered)
             }
         })
+
 
         return () => {
             socket.off("get-state")

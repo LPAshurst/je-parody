@@ -13,6 +13,7 @@ export interface Game {
   active_player: string | null;
   buzzer_locked: boolean;
   clues: PlayClue[];
+  player_picking_category: string | null;
 }
 
 export interface Player {

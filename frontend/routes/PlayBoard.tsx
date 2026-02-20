@@ -19,14 +19,13 @@ export default function PlayBoard() {
     function handleClueClick(clue: PlayClue) {
         socket.emit("select-clue", {
             room_id: room,
-            position: clue.position
+            position: clue.position,
+            daily_double: clue.daily_double
         });
     }
 
     function handleCloseModal() {
-        console.log("here")
         socket.emit("close-clue", room)
-
     }
 
     function handleManualPoints(points: number, userName: string) {
@@ -49,13 +48,11 @@ export default function PlayBoard() {
                 correct_response: response
             })
         }
-
     }
 
     useEffect(() => {
 
         if (!room) {
-            console.log("No room parameter");
             return;
         }
             
@@ -63,9 +60,9 @@ export default function PlayBoard() {
         socket.emit("ask-for-state", room)
 
         socket.on("get-state", (game: Game) => {
+            console.log(game)
             setGame(game)
             setClues(game.clues)
-            console.log(game)
             setPlayers(game.players)
             if (game.current_clue_position) {
                 setDailyDouble(game.clues[game.current_clue_position].daily_double)

@@ -38,7 +38,6 @@ export default function HomePage() {
     
     function handleJoinGame(e: React.FormEvent) {
         e.preventDefault();
-        console.log("joining with:", roomCode.trim().toLowerCase(), auth.userName);
         if (roomCode.trim()) {
             socket.emit("join-game", {
                 room_id: roomCode.trim().toLowerCase(), 

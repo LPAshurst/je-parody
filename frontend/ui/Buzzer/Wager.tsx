@@ -57,7 +57,6 @@ export default function Wager({ room, userName, playerScore, onWagerSubmitted, s
 
     function handleSubmit() {
         if (submitted) return;
-        console.log(wager)
         socket.emit("daily_double_wager", { room_id: room, user_name: userName, wager: wager });
         setSubmitted(true);
         onWagerSubmitted();

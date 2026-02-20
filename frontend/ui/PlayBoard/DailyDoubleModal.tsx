@@ -35,24 +35,22 @@ export default function DailyDoubleModal({ onClose, clue, isAnswering, answerQue
 
     useEffect(() => {
         if (phase !== "splash") return;
-        const t = setTimeout(() => setPhase("waiting"), 2500);
-        return () => clearTimeout(t);
+        setPhase("waiting")
     }, [phase]);
 
     useEffect(() => {
-        socket.on("get-state", (game: Game) => {
-            if (game.active_player) {
-                setActivePlayer(game.active_player);
-                const player = game.players[game.active_player];
-                console.log(player)
-
-                if (player?.wager && player.wager > 0 && phase === "waiting") {
+        const onGameState = (game: Game) => {
+            if (game.player_picking_category) {
+                setActivePlayer(game.player_picking_category);
+                const player = game.players[game.player_picking_category];
+                if (player.wager && player.wager > 0 && phase === "waiting") {
                     setWagerAmount(player.wager);
                     setPhase("question");
                 }
             }
-        });
-        return () => { socket.off("get-state"); };
+        };
+        socket.on("get-state", onGameState);
+        return () => { socket.off("get-state", onGameState); };
     }, [phase]);
 
     // Keyboard handler for question phase

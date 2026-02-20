@@ -121,7 +121,6 @@
     font-weight: 400;
     color: rgba(255, 255, 255, 0);
     letter-spacing: 0.03em;
-    transition: color 0.8s ease;
     text-align: center;
     min-height: 2rem;
 }

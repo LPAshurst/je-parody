@@ -34,7 +34,6 @@ export default function useBoardSaveState(initialClues: Clue[], boardTitle: stri
     }
 
     async function saveBoard(cluesToSave?: Clue[], titleToSave?: string) {
-        console.log(titleToSave)
         const board: Board = {
             title: titleToSave ? titleToSave : boardTitle,
             clues: cluesToSave ? cluesToSave : clues,
@@ -54,7 +53,6 @@ export default function useBoardSaveState(initialClues: Clue[], boardTitle: stri
         })
 
         if (!res.ok) {
-            console.log("didnt work :(")
             return;
         }
         
