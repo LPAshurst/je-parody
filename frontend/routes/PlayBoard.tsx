@@ -69,8 +69,13 @@ export default function PlayBoard() {
             }
         })
 
+        socket.on("finished-game", () => {
+            setGameOver(true);
+        })
+
         return () => {
             socket.off("get-state");
+            socket.off("finished-game");
         };
     
     }, [])

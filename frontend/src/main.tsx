@@ -62,6 +62,7 @@ createRoot(document.getElementById('root')!).render(
               <Route path="player/:room" element={<ProtectedRoute element={<Buzzer />} />} />
               <Route path="waiting-room/:room" element={<ProtectedRoute element={<WaitingRoom />} />} />    
               <Route path="error" element={<ErrorPage />} />
+              <Route path='game-over' element={<EndGame />} />
               <Route path="*" element={<Navigate to="/error" replace />} />
             </Routes>
           </BrowserRouter>
