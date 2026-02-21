@@ -46,7 +46,6 @@ async fn cancel_room(s: SocketRef, Data(room_id): Data<String>, store: State<Gam
 async fn answer_daily_double(s: SocketRef, Data(response_data): Data<ResponseData>,  store: State<GameStore>) {
     match store.consume_wager(&response_data.room_id, response_data.correct_response).await {
         Ok(_) => {
-            println!("updating game");
             update_game(s, store, &response_data.room_id).await;
         },
         Err(_) => println!("Something is broken")
@@ -56,7 +55,6 @@ async fn answer_daily_double(s: SocketRef, Data(response_data): Data<ResponseDat
 async fn store_wager(s: SocketRef, Data(daily_double_data): Data<DailyDoubleWager>, store: State<GameStore>) {
     match store.store_wager(&daily_double_data).await {
         Ok(_) => {
-            println!("in here about to submit wager");
             let _ = s.within(daily_double_data.room_id.clone()).emit("wager-submitted", &daily_double_data.wager).await;
             update_game(s, store, &daily_double_data.room_id).await;
         },
@@ -97,11 +95,16 @@ async fn create_game(s: SocketRef, store: State<GameStore>) {
 
 async fn update_game(s: SocketRef, store: State<GameStore>, room_id: &str) {
 
-    println!("{room_id}");
     let game = store.get_game(room_id).await;
     if let Some(game) = game {
         let code = game.code.clone();
-        let _ = s.within(code).emit("get-state", &game).await;
+
+        if game.clues_answered == game.clues.len() {
+            let _ = store.delete_game(&room_id).await;
+            let _ = s.within(code).emit("finished-game", &game).await;
+        } else {
+            let _ = s.within(code).emit("get-state", &game).await;
+        }
     } else {
         // something went seriousely wrong the game doesnt exist anymore
         // FIXME add some sort of logic

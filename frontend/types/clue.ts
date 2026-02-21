@@ -14,6 +14,8 @@ export interface Game {
   buzzer_locked: boolean;
   clues: PlayClue[];
   player_picking_category: string | null;
+  clues_answered: number;
+  game_started: boolean;
 }
 
 export interface Player {

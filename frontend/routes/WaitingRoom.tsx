@@ -16,13 +16,24 @@ export default function WaitingRoom() {
         console.log(userName)
         setPlayers(prev => [...prev, userName]);
     };
+
+    const getStateAttemptRejoin = (game: Game) => {
+        console.log(Object.keys(game.players), auth.userName, game.game_started)
+        if (Object.keys(game.players).includes(auth.userName) && game.game_started) {
+            navigate(`/player/${room}`)
+        } else {
+            setPlayers([...Object.keys(game.players)])
+        }
+    };
+
     useEffect(() => {
 
         if (room) {
             rejoinRoom(room);
         }
+
         socket.emit("ask-for-state", room)
-        socket.on("get-state", (game: Game) => setPlayers([...Object.keys(game.players)]))
+        socket.on("get-state", (game: Game) => getStateAttemptRejoin(game))
         socket.on("user-joined", onUserJoined);
         socket.on("leave-room",  (_str) => {console.log("here"); {navigate("/home")}})
 
