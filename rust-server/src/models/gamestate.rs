@@ -27,7 +27,9 @@ pub struct Game {
     pub active_player: Option<String>,
     pub buzzer_locked: bool,
     pub clues: Vec<GameClue>,
-    pub player_picking_category: Option<String>
+    pub player_picking_category: Option<String>,
+    pub clues_answered: usize,
+    pub game_started: bool
 }
 
 #[derive(Clone, Debug, Deserialize, serde::Serialize)]
@@ -58,7 +60,9 @@ impl GameStore {
             active_player: None,
             buzzer_locked: true,
             clues: Vec::new(),
-            player_picking_category: None
+            player_picking_category: None,
+            clues_answered: 0,
+            game_started: false
         };
         
         self.games.write().await.insert(code, game.clone());
@@ -75,12 +79,12 @@ impl GameStore {
     
 
     pub async fn initialize_game(&self, game_id: &str, clues: Vec<GameClue>, player_picking_category: String) -> Option<Game> {
-        println!("here in init");
         let mut games = self.games.write().await;
         let game = games.get_mut(game_id);
         if let Some(game) = game {
             game.clues = clues;
             game.player_picking_category = Some(player_picking_category);
+            game.game_started = true;
             Some(game.clone())
         } else {
             None
@@ -220,6 +224,7 @@ impl GameStore {
             game.buzzer_locked = true;
             clue.answered = true;
             game.active_player = None;
+            game.clues_answered += 1;
             Ok(())
         } else {
             Err(GameError::PlayerNotFound)
@@ -249,6 +254,7 @@ impl GameStore {
                     player.has_answered = false;
                 }
                 game.player_picking_category = Some(player_name.to_string());
+                game.clues_answered += 1;
             } else {
                 player.score -= clue_value;
                 game.buzzer_locked = false;
@@ -258,6 +264,7 @@ impl GameStore {
             // forfeit the points
             clue.answered = true;
             forfeit_clue(game);
+            game.clues_answered += 1;
         }
         
         game.active_player = None;

@@ -29,6 +29,6 @@ export default defineConfig({
       }
     },
     host: true,
-    allowedHosts: ["lorenzopi.local", "elsy-unrude-jemma.ngrok-free.dev"]
+    allowedHosts: ["lorenzopi.local", "elsy-unrude-jemma.ngrok-free.dev", "unbureaucratically-undepressible-earlean.ngrok-free.dev"]
   }
 })
