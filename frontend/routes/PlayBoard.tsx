@@ -1,5 +1,5 @@
 import "../styles/PlayBoard/PlayBoard.css"
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import type { PlayClue, Game, Player } from "../types";
 import JeopardyBoard from "../ui/PlayBoard/PlayJeopardyBoard";
@@ -15,6 +15,7 @@ export default function PlayBoard() {
     const [players, setPlayers] = useState<Record<string, Player>>({});
     const [dailyDouble, setDailyDouble] = useState(false);
     const { socket, rejoinRoom } = useSocket();
+    const navigate = useNavigate();
     
     function handleClueClick(clue: PlayClue) {
         socket.emit("select-clue", {
@@ -69,8 +70,13 @@ export default function PlayBoard() {
             }
         })
 
-        socket.on("finished-game", () => {
-            setGameOver(true);
+        socket.on("finished-game", (game: Game) => {
+            navigate("/endgame", {
+                state: {
+                    game,
+                    players: game.players
+                }
+            });
         })
 
         return () => {
