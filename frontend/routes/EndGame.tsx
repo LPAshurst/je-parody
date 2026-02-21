@@ -15,9 +15,9 @@ export default function EndGame() {
     const sorted = Object.entries(players).sort(([, a], [, b]) => b.score - a.score);
 
     const podiumOrder = [
-        sorted[1], // 2nd place - left
-        sorted[0], // 1st place - center
-        sorted[2], // 3rd place - right
+        sorted[1], 
+        sorted[0], 
+        sorted[2], 
     ];
 
     const medals = ["🥈", "🥇", "🥉"];

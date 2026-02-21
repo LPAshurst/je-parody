@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "../styles/Buzzer.css"
 import Wager from "../ui/Buzzer/Wager";
 import { useEffect, useState } from "react";
@@ -13,7 +13,7 @@ export default function Buzzer() {
     const [hasAnswered, setHasAnswered] = useState(false);
     const [playerScore, setPlayerScore] = useState(0);
     const [answeringDailyDouble, setAnsweringDailyDouble] = useState(false);
-
+    const navigate = useNavigate();
 
     const {socket, rejoinRoom} = useSocket();
 
@@ -41,9 +41,19 @@ export default function Buzzer() {
         })
 
 
+        socket.on("finished-game", (game: Game) => {
+            navigate("/game-over", {
+                state: {
+                    game,
+                    players: game.players
+                }
+            });
+        })
+
         return () => {
-            socket.off("get-state")
-        }
+            socket.off("get-state");
+            socket.off("finished-game");
+        };
 
     }, [])
 
