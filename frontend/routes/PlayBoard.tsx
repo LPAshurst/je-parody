@@ -71,7 +71,7 @@ export default function PlayBoard() {
         })
 
         socket.on("finished-game", (game: Game) => {
-            navigate("/endgame", {
+            navigate("/game-over", {
                 state: {
                     game,
                     players: game.players
