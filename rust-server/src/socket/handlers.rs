@@ -46,7 +46,7 @@ async fn cancel_room(s: SocketRef, Data(room_id): Data<String>, store: State<Gam
 async fn answer_daily_double(s: SocketRef, Data(response_data): Data<ResponseData>,  store: State<GameStore>) {
     match store.consume_wager(&response_data.room_id, response_data.correct_response).await {
         Ok(_) => {
-            update_game(s, store, &response_data.room_id).await;
+            update_game(s, store, &response_data.room_id, false).await;
         },
         Err(_) => println!("Something is broken")
     }
@@ -56,7 +56,7 @@ async fn store_wager(s: SocketRef, Data(daily_double_data): Data<DailyDoubleWage
     match store.store_wager(&daily_double_data).await {
         Ok(_) => {
             let _ = s.within(daily_double_data.room_id.clone()).emit("wager-submitted", &daily_double_data.wager).await;
-            update_game(s, store, &daily_double_data.room_id).await;
+            update_game(s, store, &daily_double_data.room_id, false).await;
         },
         Err(_) => println!("Something is broken")
     }
@@ -93,13 +93,13 @@ async fn create_game(s: SocketRef, store: State<GameStore>) {
     let _ = s.emit("room-code", &game.code);
 }
 
-async fn update_game(s: SocketRef, store: State<GameStore>, room_id: &str) {
+async fn update_game(s: SocketRef, store: State<GameStore>, room_id: &str, close_clue: bool) {
 
     let game = store.get_game(room_id).await;
     if let Some(game) = game {
         let code = game.code.clone();
 
-        if game.clues_answered == game.clues.len() {
+        if game.clues_answered == game.clues.len() && close_clue {
             let _ = store.delete_game(&room_id).await;
             let _ = s.within(code).emit("finished-game", &game).await;
         } else {
@@ -140,7 +140,7 @@ async fn start_game(s: SocketRef, Data(start_game_data): Data<StartGameData>, st
 
 async fn handle_selected_clue(s: SocketRef, Data(response_data): Data<SelectedClueData>, store: State<GameStore>) {
     match store.select_clue(&response_data).await {
-        Ok(_) => update_game(s, store, &response_data.room_id).await,
+        Ok(_) => update_game(s, store, &response_data.room_id, false).await,
         Err(_) => println!("Something is broken")
     }
         
@@ -149,14 +149,14 @@ async fn handle_selected_clue(s: SocketRef, Data(response_data): Data<SelectedCl
 
 async fn handle_closed_clue(s: SocketRef, Data(room_id): Data<String>, store: State<GameStore>) {
     match store.close_clue(&room_id).await {
-        Ok(_) => update_game(s, store, &room_id).await,
+        Ok(_) => update_game(s, store, &room_id, true).await,
         Err(_) => println!("No game please fix")
     }
 }
 
 async fn handle_buzz_in(s: SocketRef, Data(response_data): Data<JoinGameData>,  store: State<GameStore>) {
     match store.buzz_in(&response_data.room_id, &response_data.user_name).await {
-        Ok(_) => update_game(s, store, &response_data.room_id).await,
+        Ok(_) => update_game(s, store, &response_data.room_id, false).await,
         Err(_) => println!("No game")
     }
 }
@@ -164,7 +164,7 @@ async fn handle_buzz_in(s: SocketRef, Data(response_data): Data<JoinGameData>,  
 async fn handle_board_response(s: SocketRef, Data(response_data): Data<ResponseData>,  store: State<GameStore>) {
 
     match store.update_score(&response_data.room_id, response_data.correct_response).await {
-        Ok(_) => update_game(s, store, &response_data.room_id).await,
+        Ok(_) => update_game(s, store, &response_data.room_id, false).await,
         Err(_) => println!("Something is broken")
     }
 }
@@ -172,7 +172,7 @@ async fn handle_board_response(s: SocketRef, Data(response_data): Data<ResponseD
 async fn handle_manual_points(s: SocketRef, Data(response_data): Data<ManualIncrementData>, store: State<GameStore>) {
 
     match store.update_manual_score(&response_data.room_id, &response_data.user_name, response_data.amount).await {
-        Ok(_) => update_game(s, store, &response_data.room_id).await,
+        Ok(_) => update_game(s, store, &response_data.room_id, false).await,
         Err(_) => println!("No gmae or player fix me")
     }
     
