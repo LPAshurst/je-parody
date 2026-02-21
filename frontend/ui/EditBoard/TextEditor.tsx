@@ -84,7 +84,7 @@ export default function TextEditor({ selectedClue, onSave, onClose }: TextEditor
         <div className="editing-modal">
             <header className="editing-header">
                 <div className="header-title">
-                    {selectedClue?.category ?? "Category"}
+                    {selectedClue?.category ?? "Category"} for {selectedClue?.clue_val}
                 </div>
             </header>
 

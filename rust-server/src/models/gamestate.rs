@@ -11,6 +11,7 @@ pub enum GameError {
     PlayerExists
 }
 
+
 #[derive(Clone, Debug, serde::Serialize)]
 pub struct Player {
     pub score: i32,
