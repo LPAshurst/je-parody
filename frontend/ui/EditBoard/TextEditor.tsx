@@ -3,7 +3,7 @@ import 'react-quill-new/dist/quill.snow.css';
 import { type Clue } from '../../types';
 import "../../styles/EditBoard/TextEditor.css";
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { getQuillModules } from '../../utils/quillConfig';
+import { getQuillModulesClue, getQuillModulesResponse } from '../../utils/quillConfig';
 import processClueContent from "../../utils/processClueContent";
 
 interface TextEditorProps {
@@ -38,7 +38,7 @@ export default function TextEditor({ selectedClue, onSave, onClose }: TextEditor
     // I wont lie im lowkey a fraud i had AI help with the memo thing
     // the problem was that the error squigglies kept rerendering and this was the fix
     const clueModules = useMemo(() => ({
-        ...getQuillModules(),
+        ...getQuillModulesClue(),
         keyboard: {
             bindings: {
                 tab: {
@@ -53,7 +53,7 @@ export default function TextEditor({ selectedClue, onSave, onClose }: TextEditor
     }), []);
 
     const answerModules = useMemo(() => ({
-        ...getQuillModules(),
+        ...getQuillModulesResponse(),
         keyboard: {
             bindings: {
                 tab: {
@@ -76,6 +76,7 @@ export default function TextEditor({ selectedClue, onSave, onClose }: TextEditor
             clue: clue.content,
             response: answer.content,
         };
+        updatedClue.clue_is_picture = clue.hasMedia;
         onSave(updatedClue);
         onClose();
     };
@@ -96,7 +97,7 @@ export default function TextEditor({ selectedClue, onSave, onClose }: TextEditor
                         theme="snow"
                         modules={clueModules}
                         value={clueText}
-                        onChange={setClueText}
+                        onChange={(val) => { setClueText(val); }}
                         placeholder="Enter clue here"
                     />
                 </div>

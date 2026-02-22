@@ -77,7 +77,8 @@ export default function SetupPlayBoard() {
                     response: clue.response,
                     position: clue.position,
                     answered: false,
-                    daily_double: clue.daily_double
+                    daily_double: clue.daily_double,
+                    has_media: clue.clue_is_picture
                 }));
 
                 setClues(newClues);

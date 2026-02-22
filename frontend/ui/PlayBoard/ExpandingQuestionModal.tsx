@@ -12,7 +12,6 @@ interface ExpandingQuestionModalProps {
 export default function ExpandingQuestionModal({onClose, clue, isAnswering, answerQuestion}: ExpandingQuestionModalProps) {
     const [isExpanded, setIsExpanded] = useState(false);
     const [showAnswer, setShowAnswer] = useState(false);
-
     const getFontSize = (text: string) => {
         const length = text.length;
         if (length > 300) return "clamp(1.5rem, 3vw, 3rem)";
@@ -73,9 +72,16 @@ export default function ExpandingQuestionModal({onClose, clue, isAnswering, answ
                 </div>
             </header>
             <div className="play-modal-content">
-                <div className="play-modal-clue" style={{fontSize: getFontSize(clue.clue)}}>
-                    {clue.clue}
-                </div>
+                {clue.has_media ? (
+                    <div
+                        className="play-modal-clue"
+                        dangerouslySetInnerHTML={{ __html: clue.clue }}
+                    />
+                ) : (
+                    <div className="play-modal-clue" style={{ fontSize: getFontSize(clue.clue) }}>
+                        {clue.clue}
+                    </div>
+                )}
                 <div className="play-modal-response" style={{"visibility": showAnswer ? "visible" : "hidden", fontSize: getFontSize(clue.clue)}}>
                     {clue.response}
                 </div>

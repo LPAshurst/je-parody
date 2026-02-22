@@ -46,7 +46,8 @@ pub struct GameClue {
     pub category: String,
     pub answered: bool,
     pub clue_val: i32,
-    pub daily_double: bool
+    pub daily_double: bool,
+    pub has_media: bool
 }
 
 pub type GameRooms = HashMap<String, Game>;
