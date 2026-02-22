@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "../../styles/PlayBoard/ExpandingQuestionModal.css";
-import type { PlayClue, Game } from "../../types";
+import type { PlayClue, Game, StateResponse } from "../../types";
 import { useSocket } from "../../context/SocketContext";
 import DailyDoubleWaitingScreen from "./DailyDoubleWaitingScreen";
 
@@ -39,15 +39,19 @@ export default function DailyDoubleModal({ onClose, clue, isAnswering, answerQue
     }, [phase]);
 
     useEffect(() => {
-        const onGameState = (game: Game) => {
-            if (game.player_picking_category) {
-                setActivePlayer(game.player_picking_category);
-                const player = game.players[game.player_picking_category];
-                if (player.wager && player.wager > 0 && phase === "waiting") {
-                    setWagerAmount(player.wager);
-                    setPhase("question");
+        const onGameState = (response: StateResponse) => {
+            if (response.game !== null) {
+                const game = response.game;
+                if (game.player_picking_category) {
+                    setActivePlayer(game.player_picking_category);
+                    const player = game.players[game.player_picking_category];
+                    if (player.wager && player.wager > 0 && phase === "waiting") {
+                        setWagerAmount(player.wager);
+                        setPhase("question");
+                    }
                 }
             }
+
         };
         socket.on("get-state", onGameState);
         return () => { socket.off("get-state", onGameState); };
