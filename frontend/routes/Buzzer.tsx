@@ -3,7 +3,7 @@ import "../styles/Buzzer.css"
 import Wager from "../ui/Buzzer/Wager";
 import { useEffect, useState } from "react";
 import { useSocket } from "../context/SocketContext";
-import type { Game, PlayClue } from "../types";
+import type { Game, PlayClue, StateResponse } from "../types";
 import { UseAuth } from "../context/AuthContext";
 
 export default function Buzzer() {
@@ -19,7 +19,7 @@ export default function Buzzer() {
 
     const auth = UseAuth();
     function buzz() {
-        socket.emit("buzz_in", {room_id: room, user_name: auth.userName})
+        socket.emit("buzz-in", {room_id: room, user_name: auth.userName})
     }
 
     useEffect(() => {
@@ -29,15 +29,21 @@ export default function Buzzer() {
             socket.emit("ask-for-state", room);
         }
 
-        socket.on("get-state", (game: Game) => {
-            const player = game.players[auth.userName]
-            setBuzzerLocked(game.buzzer_locked)
-            setHasAnswered(player.has_answered)
-            setPlayerScore(player.score)
-            if (game.current_clue_position) {
-                const clue: PlayClue = game.clues[game.current_clue_position]
-                setAnsweringDailyDouble(clue.daily_double && auth.userName === game.player_picking_category && player.wagered === false && !clue.answered)
+        socket.on("get-state", (response: StateResponse) => {
+            if (response.game !== null) {
+                const game = response.game;
+                const player = game.players[auth.userName]
+                setBuzzerLocked(game.buzzer_locked)
+                setHasAnswered(player.has_answered)
+                setPlayerScore(player.score)
+                if (game.current_clue_position) {
+                    const clue: PlayClue = game.clues[game.current_clue_position]
+                    setAnsweringDailyDouble(clue.daily_double && auth.userName === game.player_picking_category && player.wagered === false && !clue.answered)
+                }
+            } else {
+                navigate("/home");
             }
+
         })
 
 

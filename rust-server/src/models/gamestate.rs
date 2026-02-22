@@ -11,8 +11,13 @@ pub enum GameError {
     PlayerExists
 }
 
+#[derive(serde::Serialize, serde::Deserialize)]
+pub struct StateResponse {
+    pub game: Option<Game>,
+    pub error: Option<String>,
+}
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Player {
     pub score: i32,
     pub has_answered: bool,
@@ -20,7 +25,7 @@ pub struct Player {
     pub wagered: bool,
 }
 
-#[derive(Clone, Debug, serde::Serialize)]
+#[derive(Clone, Debug, serde::Serialize, serde::Deserialize)]
 pub struct Game {
     pub code: String,
     pub players: HashMap<String, Player>,

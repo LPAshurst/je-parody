@@ -3,7 +3,7 @@ import { useSocket } from "../context/SocketContext";
 import { UseAuth } from "../context/AuthContext";
 import "../styles/WaitingRoom.css";
 import { useEffect, useState } from "react";
-import type { Game } from "../types";
+import type { Game, StateResponse } from "../types";
 
 export default function WaitingRoom() {
     const navigate = useNavigate();
@@ -17,13 +17,20 @@ export default function WaitingRoom() {
         setPlayers(prev => [...prev, userName]);
     };
 
-    const getStateAttemptRejoin = (game: Game) => {
-        console.log(Object.keys(game.players), auth.userName, game.game_started)
-        if (Object.keys(game.players).includes(auth.userName) && game.game_started) {
-            navigate(`/player/${room}`)
+    const getStateAttemptRejoin = (response: StateResponse) => {
+
+        if (response.game !== null) {
+            const game = response.game;
+            if (Object.keys(game.players).includes(auth.userName) && game.game_started) {
+                navigate(`/player/${room}`)
+            } else {
+                setPlayers([...Object.keys(game.players)])
+            }
         } else {
-            setPlayers([...Object.keys(game.players)])
+            navigate("/home")
         }
+
+
     };
 
     useEffect(() => {
@@ -33,7 +40,7 @@ export default function WaitingRoom() {
         }
 
         socket.emit("ask-for-state", room)
-        socket.on("get-state", (game: Game) => getStateAttemptRejoin(game))
+        socket.on("get-state", (response: StateResponse) => getStateAttemptRejoin(response))
         socket.on("user-joined", onUserJoined);
         socket.on("leave-room",  (_str) => {console.log("here"); {navigate("/home")}})
 

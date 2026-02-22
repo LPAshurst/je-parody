@@ -37,6 +37,12 @@ export interface Clue {
   position: number;
 }
 
+export interface StateResponse {
+    game: null | Game,
+    error: null | string,
+}
+
+
 export interface PlayClue {
   position: number;
   clue: string;

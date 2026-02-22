@@ -1,4 +1,4 @@
-use crate::models::gamestate::{DailyDoubleWager, GameError, GameStore, JoinGameData, ManualIncrementData, Player, ResponseData, SelectedClueData, StartGameData};
+use crate::models::gamestate::{DailyDoubleWager, GameError, GameStore, JoinGameData, ManualIncrementData, Player, ResponseData, SelectedClueData, StartGameData, StateResponse};
 use socketioxide::extract::{Data, SocketRef, State};
 
 pub async fn on_game_connect(socket: SocketRef) {
@@ -9,9 +9,9 @@ pub async fn on_game_connect(socket: SocketRef) {
 
     socket.on("start-game", start_game);
     
-    socket.on("buzz_in", handle_buzz_in);
+    socket.on("buzz-in", handle_buzz_in);
 
-    socket.on("board_response", handle_board_response);
+    socket.on("board-response", handle_board_response);
 
     socket.on("select-clue", handle_selected_clue);
 
@@ -23,9 +23,9 @@ pub async fn on_game_connect(socket: SocketRef) {
 
     socket.on("manual-points", handle_manual_points);
 
-    socket.on("daily_double_wager", store_wager);
+    socket.on("daily-double-wager", store_wager);
 
-    socket.on("answer_daily_double", answer_daily_double);
+    socket.on("answer-daily-double", answer_daily_double);
 
     socket.on("cancel-room", cancel_room);
 
@@ -94,7 +94,7 @@ async fn create_game(s: SocketRef, store: State<GameStore>) {
 }
 
 async fn update_game(s: SocketRef, store: State<GameStore>, room_id: &str, close_clue: bool) {
-
+    println!("here");
     let game = store.get_game(room_id).await;
     if let Some(game) = game {
         let code = game.code.clone();
@@ -103,23 +103,17 @@ async fn update_game(s: SocketRef, store: State<GameStore>, room_id: &str, close
             let _ = store.delete_game(&room_id).await;
             let _ = s.within(code).emit("finished-game", &game).await;
         } else {
-            let _ = s.within(code).emit("get-state", &game).await;
+            let _ = s.within(code).emit("get-state", &StateResponse {game: Some(game), error: None}).await;
         }
     } else {
         // something went seriousely wrong the game doesnt exist anymore
-        // FIXME add some sort of logic
-        println!("game doesnt exist");
+        let _ = s.within(room_id.to_string()).emit("get-state", &StateResponse {game: None, error: Some("Game doesnt exist anymore".into())}).await;
+
     }
 }
 
 async fn ask_for_state(s: SocketRef, Data(room_id): Data<String>, store: State<GameStore>) {    
-    let game = store.get_game(&room_id).await;
-    if let Some(game) = game {
-        let _ = s.emit("get-state", &game);
-    } else {
-        // game doesnt exist inform frontend
-    }
-
+    update_game(s, store, &room_id, false).await;
 }
 
 async fn rejoin_room(s: SocketRef, Data(room_id): Data<String>) {

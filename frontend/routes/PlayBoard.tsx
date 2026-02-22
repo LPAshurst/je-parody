@@ -1,7 +1,7 @@
 import "../styles/PlayBoard/PlayBoard.css"
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import type { PlayClue, Game, Player } from "../types";
+import type { PlayClue, Game, Player, StateResponse } from "../types";
 import JeopardyBoard from "../ui/PlayBoard/PlayJeopardyBoard";
 import PlayBoardFooter from "../ui/PlayBoard/PlayBoardFooter"
 import { useSocket } from "../context/SocketContext";
@@ -39,12 +39,12 @@ export default function PlayBoard() {
 
     function answerQuestion(response: boolean) {
         if (dailyDouble) {
-            socket.emit("answer_daily_double", {
+            socket.emit("answer-daily-double", {
                 room_id: room,
                 correct_response: response
             })
         } else {
-            socket.emit("board_response", {
+            socket.emit("board-response", {
                 room_id: room,
                 correct_response: response
             })
@@ -60,14 +60,19 @@ export default function PlayBoard() {
         rejoinRoom(room);
         socket.emit("ask-for-state", room)
 
-        socket.on("get-state", (game: Game) => {
-            console.log(game)
-            setGame(game)
-            setClues(game.clues)
-            setPlayers(game.players)
-            if (game.current_clue_position) {
-                setDailyDouble(game.clues[game.current_clue_position].daily_double)
+        socket.on("get-state", (response: StateResponse) => {
+            if (response.game !== null) {
+                const game = response.game;
+                setGame(game)
+                setClues(game.clues)
+                setPlayers(game.players)
+                if (game.current_clue_position) {
+                    setDailyDouble(game.clues[game.current_clue_position].daily_double)
+                }
+            } else {
+                navigate("/home")
             }
+
         })
 
         socket.on("finished-game", (game: Game) => {
