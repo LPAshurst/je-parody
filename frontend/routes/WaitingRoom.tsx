@@ -3,7 +3,7 @@ import { useSocket } from "../context/SocketContext";
 import { UseAuth } from "../context/AuthContext";
 import "../styles/WaitingRoom.css";
 import { useEffect, useState } from "react";
-import type { Game, StateResponse } from "../types";
+import type { StateResponse } from "../types";
 
 export default function WaitingRoom() {
     const navigate = useNavigate();
@@ -13,7 +13,6 @@ export default function WaitingRoom() {
     const [players, setPlayers] = useState<string[]>([]);
 
     const onUserJoined = (userName: string) => {
-        console.log(userName)
         setPlayers(prev => [...prev, userName]);
     };
 
@@ -42,7 +41,7 @@ export default function WaitingRoom() {
         socket.emit("ask-for-state", room)
         socket.on("get-state", (response: StateResponse) => getStateAttemptRejoin(response))
         socket.on("user-joined", onUserJoined);
-        socket.on("leave-room",  (_str) => {console.log("here"); {navigate("/home")}})
+        socket.on("leave-room",  (_str) => {navigate("/home")})
 
         return () => {
             socket.off("user-joined", onUserJoined);

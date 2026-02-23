@@ -66,7 +66,7 @@ export default function PlayBoard() {
                 setGame(game)
                 setClues(game.clues)
                 setPlayers(game.players)
-                if (game.current_clue_position) {
+                if (game.current_clue_position !== null) {
                     setDailyDouble(game.clues[game.current_clue_position].daily_double)
                 }
             } else {

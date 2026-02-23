@@ -3,7 +3,7 @@ import 'react-quill-new/dist/quill.snow.css';
 import { type Clue } from '../../types';
 import "../../styles/EditBoard/TextEditor.css";
 import { useState, useEffect, useRef, useMemo } from 'react';
-import { getQuillModules } from '../../utils/quillConfig';
+import { getQuillModulesClue, getQuillModulesResponse } from '../../utils/quillConfig';
 import processClueContent from "../../utils/processClueContent";
 
 interface TextEditorProps {
@@ -18,6 +18,7 @@ export default function TextEditor({ selectedClue, onSave, onClose }: TextEditor
     const clueRef = useRef<ReactQuill>(null);
     const answerRef = useRef<ReactQuill>(null);
     const [isDailyDouble, setIsDailyDouble] = useState(selectedClue?.daily_double);
+    const [saving, setSaving] = useState(false);
 
     useEffect(() => {
         if (selectedClue) {
@@ -38,7 +39,7 @@ export default function TextEditor({ selectedClue, onSave, onClose }: TextEditor
     // I wont lie im lowkey a fraud i had AI help with the memo thing
     // the problem was that the error squigglies kept rerendering and this was the fix
     const clueModules = useMemo(() => ({
-        ...getQuillModules(),
+        ...getQuillModulesClue(),
         keyboard: {
             bindings: {
                 tab: {
@@ -53,7 +54,7 @@ export default function TextEditor({ selectedClue, onSave, onClose }: TextEditor
     }), []);
 
     const answerModules = useMemo(() => ({
-        ...getQuillModules(),
+        ...getQuillModulesResponse(),
         keyboard: {
             bindings: {
                 tab: {
@@ -67,8 +68,9 @@ export default function TextEditor({ selectedClue, onSave, onClose }: TextEditor
         },
     }), [])
 
-    const handleSave = () => {
+    async function handleSave() {
         if (!selectedClue) return;
+        setSaving(true)
         const clue = processClueContent(clueText);
         const answer = processClueContent(answerText);
         const updatedClue: Clue = {
@@ -76,7 +78,37 @@ export default function TextEditor({ selectedClue, onSave, onClose }: TextEditor
             clue: clue.content,
             response: answer.content,
         };
+        updatedClue.clue_is_picture = clue.hasMedia;
+        if (clue.hasMedia) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(clue.content, 'text/html');
+            const img = doc.querySelector('img');
+            
+            if (img && img.src.startsWith('data:')) {
+                const blob = await fetch(img.src).then(r => r.blob());
+                const formData = new FormData();
+                formData.append('file', blob);
+                
+                const res = await fetch('/api/media/upload_image', { method: 'POST', body: formData });
+                console.log("status:", res.status, res.url);
+                if (!res.ok) {
+                    if (res.status == 413) {
+                        alert("Image is too big. Please dont troll me :3")
+                    } else {
+                        alert("Couldn't save the image for some reason. Try again in a bit and if it still doesnt work text me")
+                    }
+                    setSaving(false)
+                    return
+                } 
+                
+                const { url } = await res.json();
+                img.src = url;
+                updatedClue.clue = doc.body.innerHTML;
+            }
+        }
+
         onSave(updatedClue);
+        setSaving(false)
         onClose();
     };
 
@@ -96,7 +128,7 @@ export default function TextEditor({ selectedClue, onSave, onClose }: TextEditor
                         theme="snow"
                         modules={clueModules}
                         value={clueText}
-                        onChange={setClueText}
+                        onChange={(val) => { setClueText(val); }}
                         placeholder="Enter clue here"
                     />
                 </div>
@@ -133,7 +165,7 @@ export default function TextEditor({ selectedClue, onSave, onClose }: TextEditor
                     Daily Double
                 </button>
                 <button onClick={onClose}>Cancel</button>
-                <button onClick={handleSave}>Save</button>
+                <button onClick={handleSave}>{saving ? 'Saving...' : 'Save'}</button>
             </div>
         </div>
     );

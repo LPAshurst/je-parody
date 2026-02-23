@@ -1,6 +1,7 @@
 mod board;
 mod clues;
 mod users;
+mod media;
 
 use axum::{
     Router,
@@ -14,7 +15,7 @@ use socketioxide::{
     SocketIo,
 };
 
-use crate::socket::handlers::on_game_connect;
+use crate::{routes::media::media_routes, socket::handlers::on_game_connect};
 
 use crate::models::gamestate::GameStore;
 
@@ -28,7 +29,7 @@ pub fn create_router(pool: PgPool) -> Router {
         "http://lorenzopi.local:5173".parse().unwrap(),
         "http://lorenzopi.local:4173".parse().unwrap(),
         "https://elsy-unrude-jemma.ngrok-free.dev".parse().unwrap(),
-        "unbureaucratically-undepressible-earlean.ngrok-free.dev".parse().unwrap() // dev proxy
+        "https://unbureaucratically-undepressible-earlean.ngrok-free.dev".parse().unwrap() // dev proxy
     ];
 
     let cors_layer = CorsLayer::new()
@@ -48,6 +49,7 @@ pub fn create_router(pool: PgPool) -> Router {
         .nest("/user", users::user_routes())
         .nest("/clues", clues::question_routes())
         .nest("/boards", board::board_routes())
+        .nest("/media", media_routes())
         .route("/postExample", post(|| async { "posting" }))
         .with_state(pool)
         .layer(CookieManagerLayer::new())

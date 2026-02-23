@@ -51,6 +51,7 @@ export interface PlayClue {
   answered: boolean;
   clue_val: number;
   daily_double: boolean;
+  has_media: boolean;
 }
 
 export interface ExternalClue {

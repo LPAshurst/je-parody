@@ -101,6 +101,18 @@
 }
 
 
+.ql-toolbar {
+    position: relative;
+}
+
+.ql-tooltip {
+    position: absolute !important;
+    left: 50% !important;
+    top: 0px !important;
+    transform: translateX(-50%) !important;
+    width: 100%;
+}
+
 
 /* toolbar */
 .ql-toolbar.ql-snow {

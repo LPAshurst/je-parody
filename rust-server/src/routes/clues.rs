@@ -25,7 +25,6 @@ async fn update_clue(
     Json(clue): Json<Clue>,
 ) -> (StatusCode, Json<String>) {
 
-    println!("here");
     let board: Result<i32, sqlx::Error> = sqlx::query_scalar("SELECT id FROM boards WHERE slug = $1 AND user_id = $2")
         .bind(&slug)
         .bind(id)
