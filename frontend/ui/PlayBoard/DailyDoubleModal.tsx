@@ -81,12 +81,10 @@ export default function DailyDoubleModal({ onClose, clue, isAnswering, answerQue
     return (
         <div className={`modal dd-modal ${isExpanded ? "expanded" : ""}`}>
 
-            {/* ── Splash ───────────────────────────────── */}
             {(phase === "splash" || phase === "waiting") && (
                 <DailyDoubleWaitingScreen phase={phase} activePlayer={activePlayer} />
             )}
 
-            {/* ── Question ─────────────────────────────── */}
             {phase === "question" && (
                 <>
                     <header className="expanding-modal-header">
@@ -102,13 +100,17 @@ export default function DailyDoubleModal({ onClose, clue, isAnswering, answerQue
                         </div>
                     </header>
                     <div className="play-modal-content dd-question-content">
-                        <div className="play-modal-clue" style={{ fontSize: getFontSize(clue.clue) }}>
-                            {clue.clue}
-                        </div>
-                        <div
-                            className="play-modal-response"
-                            style={{ visibility: showAnswer ? "visible" : "hidden", fontSize: getFontSize(clue.clue) }}
-                        >
+                        {clue.has_media ? (
+                            <div
+                                className="play-modal-clue"
+                                dangerouslySetInnerHTML={{ __html: clue.clue }}
+                            />
+                        ) : (
+                            <div className="play-modal-clue" style={{ fontSize: getFontSize(clue.clue) }}>
+                                {clue.clue}
+                            </div>
+                        )}
+                        <div className="play-modal-response" style={{"visibility": showAnswer ? "visible" : "hidden", fontSize: getFontSize(clue.clue)}}>
                             {clue.response}
                         </div>
                     </div>

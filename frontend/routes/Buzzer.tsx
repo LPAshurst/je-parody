@@ -36,7 +36,7 @@ export default function Buzzer() {
                 setBuzzerLocked(game.buzzer_locked)
                 setHasAnswered(player.has_answered)
                 setPlayerScore(player.score)
-                if (game.current_clue_position) {
+                if (game.current_clue_position !== null) {
                     const clue: PlayClue = game.clues[game.current_clue_position]
                     setAnsweringDailyDouble(clue.daily_double && auth.userName === game.player_picking_category && player.wagered === false && !clue.answered)
                 }

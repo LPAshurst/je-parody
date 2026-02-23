@@ -1,4 +1,4 @@
-use std::{collections::HashMap, sync::Arc};
+use std::{cmp, collections::HashMap, sync::Arc};
 use serde::Deserialize;
 use tokio::sync::RwLock;
 use crate::socket::misc::{generate_code, forfeit_clue};
@@ -195,8 +195,8 @@ impl GameStore {
 
         if let Some(player_name) = &game.player_picking_category {
             let player = game.players.get_mut(player_name).ok_or(GameError::PlayerNotFound)?;
-            let max_wager = std::cmp::min(daily_double_wager.wager, 1000);
-            player.wager = max_wager;
+            let clamped_wager = daily_double_wager.wager.clamp(5, cmp::max(player.score, 1000));
+            player.wager = clamped_wager;
             player.wagered = true;
         }
         Ok(())
@@ -211,14 +211,11 @@ impl GameStore {
 
         if let Some(player_name) = &game.player_picking_category {
             let player = game.players.get_mut(player_name).ok_or(GameError::PlayerNotFound)?;
-            println!("{}", player.wager);
             if correct_response {
                 player.score += player.wager;
-                println!("{}", player.score);
 
             } else {
                 player.score -= player.wager;
-                println!("{}", player.score);
 
             }
             player.wager = 0;
