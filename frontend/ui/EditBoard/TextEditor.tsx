@@ -18,6 +18,7 @@ export default function TextEditor({ selectedClue, onSave, onClose }: TextEditor
     const clueRef = useRef<ReactQuill>(null);
     const answerRef = useRef<ReactQuill>(null);
     const [isDailyDouble, setIsDailyDouble] = useState(selectedClue?.daily_double);
+    const [saving, setSaving] = useState(false);
 
     useEffect(() => {
         if (selectedClue) {
@@ -67,8 +68,9 @@ export default function TextEditor({ selectedClue, onSave, onClose }: TextEditor
         },
     }), [])
 
-    const handleSave = () => {
+    async function handleSave() {
         if (!selectedClue) return;
+        setSaving(true)
         const clue = processClueContent(clueText);
         const answer = processClueContent(answerText);
         const updatedClue: Clue = {
@@ -77,7 +79,36 @@ export default function TextEditor({ selectedClue, onSave, onClose }: TextEditor
             response: answer.content,
         };
         updatedClue.clue_is_picture = clue.hasMedia;
+        if (clue.hasMedia) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(clue.content, 'text/html');
+            const img = doc.querySelector('img');
+            
+            if (img && img.src.startsWith('data:')) {
+                const blob = await fetch(img.src).then(r => r.blob());
+                const formData = new FormData();
+                formData.append('file', blob);
+                
+                const res = await fetch('/api/media/upload_image', { method: 'POST', body: formData });
+                console.log("status:", res.status, res.url);
+                if (!res.ok) {
+                    if (res.status == 413) {
+                        alert("Image is too big. Please dont troll me :3")
+                    } else {
+                        alert("Couldn't save the image for some reason. Try again in a bit and if it still doesnt work text me")
+                    }
+                    setSaving(false)
+                    return
+                } 
+                
+                const { url } = await res.json();
+                img.src = url;
+                updatedClue.clue = doc.body.innerHTML;
+            }
+        }
+
         onSave(updatedClue);
+        setSaving(false)
         onClose();
     };
 
@@ -134,7 +165,7 @@ export default function TextEditor({ selectedClue, onSave, onClose }: TextEditor
                     Daily Double
                 </button>
                 <button onClick={onClose}>Cancel</button>
-                <button onClick={handleSave}>Save</button>
+                <button onClick={handleSave}>{saving ? 'Saving...' : 'Save'}</button>
             </div>
         </div>
     );
