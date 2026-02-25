@@ -12,14 +12,11 @@ export let socket = io({
 
 // Store current room and user info for reconnection
 let currentRoom: string | null = null;
-let currentUserName: string | null = null;
 
 // Helper function to join a room
 export function rejoinRoom(roomId: string, userName?: string) {
   currentRoom = roomId;
-  if (userName) {
-    currentUserName = userName;
-  }
+  userName = userName;
   
   
   socket.emit('rejoin-room', currentRoom)
@@ -33,7 +30,6 @@ export function getCurrentRoom() {
 // Helper to leave room
 export function leaveRoom() {
   currentRoom = null;
-  currentUserName = null;
 }
 
 socket.on("disconnect", (reason) => {

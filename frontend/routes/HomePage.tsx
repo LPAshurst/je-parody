@@ -76,7 +76,7 @@ export default function HomePage() {
                     
                     <div className="card create-card">
                         <h2>Create New Board</h2>
-                        <p className="card-description">Design your own Jeopardy board with custom categories</p>
+                        <p className="card-description">Design your own board with custom categories</p>
                         <button 
                             onClick={() => navigate("../create")} 
                             className="btn btn-secondary"

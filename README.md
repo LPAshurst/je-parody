@@ -1,6 +1,6 @@
 # Je-parody
 
-A full-stack multiplayer Jeopardy game application with real-time buzzer functionality, custom board creation, and game hosting capabilities.
+A full-stack multiplayer parody of "Jeopardy" game application with real-time buzzer functionality, custom board creation, and game hosting capabilities.
 
 ## Tech Stack
 
@@ -20,7 +20,7 @@ A full-stack multiplayer Jeopardy game application with real-time buzzer functio
 ## Features
 
 - **User Authentication**: Secure login and signup system with session management
-- **Board Creation & Editing**: Create custom Jeopardy boards with categories and questions
+- **Board Creation & Editing**: Create custom boards with categories and questions
 - **Game Hosting**: Set up and host games with custom boards
 - **Real-time Buzzer System**: Players can buzz in during live games
 - **Waiting Room**: Pre-game lobby for players to join

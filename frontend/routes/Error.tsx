@@ -1,6 +1,6 @@
 import { useState } from "react";
 export default function ErrorPage() {
-  const [errorText, setErrorText] = useState<string>("Loading...");
+  const [errorText, _] = useState<string>("Loading...");
 
 
   return (

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "../../styles/PlayBoard/ExpandingQuestionModal.css";
-import type { PlayClue, Game, StateResponse } from "../../types";
+import type { PlayClue, StateResponse } from "../../types";
 import { useSocket } from "../../context/SocketContext";
 import DailyDoubleWaitingScreen from "./DailyDoubleWaitingScreen";
 

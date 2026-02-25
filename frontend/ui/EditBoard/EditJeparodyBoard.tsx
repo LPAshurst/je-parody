@@ -1,11 +1,11 @@
 import { type Clue } from "../../types";
-import "../../styles/EditBoard/EditJeopardyBoard.css"
+import "../../styles/EditBoard/EditJeparodyBoard.css"
 import ClueCell from "./EditClueCell";
 import TextEditorModal from "./TextEditorModal"
 import {StyledEditCategory} from "../../styles/muiStyled"
 import { useState } from "react";
 
-interface JeopardyProps {
+interface JeparodyBoardProps {
     clues: Clue[];
     setClues: (clues: Clue[]) => void;
     modalOpen: boolean;
@@ -17,7 +17,7 @@ interface JeopardyProps {
 }
 
 // FIX ME go through and add logic for if isSave and SetBoardTitle
-export default function JeopardyBoard({ 
+export default function JeparodyBoard({ 
     clues, 
     setClues,
     modalOpen,
@@ -26,7 +26,7 @@ export default function JeopardyBoard({
     closeTextEditor,
     updateClue,
     setSaved
-}: JeopardyProps) {
+}: JeparodyBoardProps) {
 
 
     const initialCategories = Array.from({ length: 6 }, (_, col) =>

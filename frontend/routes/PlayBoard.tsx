@@ -2,7 +2,7 @@ import "../styles/PlayBoard/PlayBoard.css"
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import type { PlayClue, Game, Player, StateResponse } from "../types";
-import JeopardyBoard from "../ui/PlayBoard/PlayJeopardyBoard";
+import JeparodyBoard from "../ui/PlayBoard/PlayJeparodyBoard";
 import PlayBoardFooter from "../ui/PlayBoard/PlayBoardFooter"
 import { useSocket } from "../context/SocketContext";
 
@@ -94,7 +94,7 @@ export default function PlayBoard() {
     return (
         <>
             <div className="play-area">
-                <JeopardyBoard clues={clues} handleClueClick={handleClueClick} isAnswering={currGame ? currGame.buzzer_locked : false} answerQuestion={answerQuestion} handleCloseModal={handleCloseModal}/>
+                <JeparodyBoard clues={clues} handleClueClick={handleClueClick} isAnswering={currGame ? currGame.buzzer_locked : false} answerQuestion={answerQuestion} handleCloseModal={handleCloseModal}/>
                 <PlayBoardFooter players={players} currPlayer={currGame?.active_player} handleManualPoints={handleManualPoints}/>
             </div>
         </>
