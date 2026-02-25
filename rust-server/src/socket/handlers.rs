@@ -94,7 +94,6 @@ async fn create_game(s: SocketRef, store: State<GameStore>) {
 }
 
 async fn update_game(s: SocketRef, store: State<GameStore>, room_id: &str, close_clue: bool) {
-    println!("here");
     let game = store.get_game(room_id).await;
     if let Some(game) = game {
         let code = game.code.clone();
@@ -137,8 +136,7 @@ async fn handle_selected_clue(s: SocketRef, Data(response_data): Data<SelectedCl
         Ok(_) => update_game(s, store, &response_data.room_id, false).await,
         Err(_) => println!("Something is broken")
     }
-        
-
+    
 }
 
 async fn handle_closed_clue(s: SocketRef, Data(room_id): Data<String>, store: State<GameStore>) {
