@@ -72,7 +72,14 @@ impl GameStore {
             game_started: false
         };
         
-        self.games.write().await.insert(code, game.clone());
+        self.games.write().await.insert(code.clone(), game.clone());
+
+        let store = self.clone();
+        tokio::spawn(async move {
+            tokio::time::sleep(tokio::time::Duration::from_hours(1)).await;
+            let _ = store.delete_game(&code).await;
+        });
+
         game
     }
 
