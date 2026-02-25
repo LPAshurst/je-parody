@@ -2,7 +2,7 @@ import "../styles/PlayBoard/PlayBoard.css"
 import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import type { Board, PlayClue } from "../types";
-import JeopardyBoard from "../ui/PlayBoard/PlayJeopardyBoard";
+import JeparodyBoard from "../ui/PlayBoard/PlayJeparodyBoard";
 import RoomCreationModal from "../ui/PlayBoard/RoomCreationModal"
 import { useSocket } from "../context/SocketContext";
 import { useNavigate } from "react-router-dom";
@@ -100,7 +100,7 @@ export default function SetupPlayBoard() {
         <>
             <RoomCreationModal slug={slug ? slug : ""} isOpen={isOpen} startGame={startGame} boardName={boardName} makingRoom={makingRoom} players={players} firstPlayer={firstPlayer} roomCode={roomCode!} createRoom={createRoom} cancelRoom={cancelRoom} setFirstPlayer={setFirstPlayer}/>
             <div className="play-area">
-                <JeopardyBoard clues={clues} handleClueClick={() => { } } isAnswering={false} answerQuestion={() => {}} handleCloseModal={() => {}}/>
+                <JeparodyBoard clues={clues} handleClueClick={() => { } } isAnswering={false} answerQuestion={() => {}} handleCloseModal={() => {}}/>
             </div>
         </>
     )

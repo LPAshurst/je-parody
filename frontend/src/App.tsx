@@ -5,7 +5,7 @@ import Login from '../ui/Login';
 import Signup from '../ui/Signup';
 import "../styles/App.css"
 
-export default function JeopardyApp() {
+export default function JeparodyApp() {
   const [modalType, setModalType] = useState<"login" | "signup" | null>(null);
   const { isAuthenticated } = UseAuth();
   

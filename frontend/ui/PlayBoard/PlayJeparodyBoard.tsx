@@ -1,8 +1,8 @@
 import { type PlayClue } from "../../types";
-import "../../styles/PlayBoard/PlayJeopardyBoard.css"
+import "../../styles/PlayBoard/PlayJeparodyBoard.css"
 import ClueCell from "./PlayClueCell"
 
-interface JeopardyProps {
+interface JeparodyBoardProps {
     clues: PlayClue[], 
     handleClueClick: (clue: PlayClue) => void;
     isAnswering: boolean;
@@ -10,7 +10,7 @@ interface JeopardyProps {
     handleCloseModal: () => void;
 }
 
-export default function JeopardyBoard({ clues, handleClueClick, isAnswering, answerQuestion, handleCloseModal}: JeopardyProps) {
+export default function JeparodyBoard({ clues, handleClueClick, isAnswering, answerQuestion, handleCloseModal}: JeparodyBoardProps) {
 
     const categories = [...new Set(clues.map(clue => clue.category))]
        

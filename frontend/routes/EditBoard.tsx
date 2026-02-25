@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 // import CrossSiteHeader from "../ui/common/CrossSiteHeader";
 
 import { emptyBoard, type Board, type Clue, type ExternalClue } from "../types/clue";
-import JeopardyBoard from "../ui/EditBoard/EditJeopardyBoard";
+import JeparodyBoard from "../ui/EditBoard/EditJeparodyBoard";
 import { useParams } from "react-router-dom";
 import "../styles/EditBoard/BoardToolbar.css"
 import useBoardSaveState from "../hooks/useBoardSaveState";
@@ -96,7 +96,7 @@ export default function EditBoard() {
                 onChange={e => {setSaved(false); setBoardTitle(e.target.value)}} 
                 placeholder={"Enter title here"} 
             />
-            <JeopardyBoard 
+            <JeparodyBoard 
                 clues={clues}
                 setClues={setClues}
                 modalOpen={modalOpen}
