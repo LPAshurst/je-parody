@@ -5,7 +5,7 @@ export default function processClueContent(html: string): {
     content: string 
 } {
     const clean = DOMPurify.sanitize(html, {
-        ALLOWED_TAGS: ['img', 'video', 'b', 'strong', 'i', 'em', 'u'],
+        ALLOWED_TAGS: ['img', 'video', 'b', 'strong', 'i', 'em', 'u', 'p', 'span'],
         ALLOWED_ATTR: ['src', 'alt', 'controls', 'width', 'height', 'type', 'style']
     });
 
