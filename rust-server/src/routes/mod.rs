@@ -21,8 +21,8 @@ use crate::models::gamestate::GameStore;
 
 pub fn create_router(pool: PgPool) -> Router {
     let origins = [
-        "http://192.168.1.249:5173".parse().unwrap(),
-        "http://192.168.1.249:4173".parse().unwrap(),
+        "http://192.168.1.104:5173".parse().unwrap(),
+        "http://192.168.1.104:4173".parse().unwrap(),
         "http://192.168.1.248:5173".parse().unwrap(),
         "http://192.168.1.248:4173".parse().unwrap(),
         "http://api.example.com".parse().unwrap(),
