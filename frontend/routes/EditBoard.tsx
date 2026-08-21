@@ -42,6 +42,7 @@ export default function EditBoard() {
                 `/api/boards/request_board/${slug}`, 
                 { credentials: "include" }
             )
+
             if (!res.ok) {
                 return;
             } else {

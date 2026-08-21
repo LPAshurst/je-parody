@@ -6,9 +6,9 @@ export function useClueState(clue: Clue, processedClue: any, processedResponse: 
     
     const hoverable = hasClue || (!hasClue && hasResponse);
     
-    let displayText: string | number = processedClue.content;
+    let displayText: string | number | undefined = undefined;
     let textClass = "";
-    
+
     if (!hasClue && hasResponse) {
         displayText = "Please fill out this clue!";
         textClass = "danger";

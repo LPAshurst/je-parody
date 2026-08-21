@@ -13,26 +13,26 @@ function MediaOrText({
     processedContent, 
     fallbackText, 
 }: { 
-    processedContent: 
-    {
+    processedContent: {
         hasMedia: boolean;
         content: string;
     }
     fallbackText?: string | number;
     className?: string;
 }) {
-    if (processedContent.hasMedia) {
+    console.log(processedContent.content)
+    if (processedContent.content !== undefined && processedContent.content !== "") {
         return (
             <div
-                className="media-content" 
-                dangerouslySetInnerHTML={{ __html: processedContent.content }} 
+                className={processedContent.hasMedia ? "media-content" : "text-content"}
+                dangerouslySetInnerHTML={{ __html: processedContent.content }}
             />
         );
     }
+    
+    
     return (
-        <span className="text-content">
-            {fallbackText ?? processedContent.content.toString()}
-        </span>
+        <span className="text-content">{fallbackText}</span>
     );
 }
 
