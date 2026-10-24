@@ -15,12 +15,25 @@ export const SOCKET_URL: string = (() => {
 })();
 
 
-export function apiFetch(path: string, init: RequestInit = {}, includeCreds=true) {
+export function apiFetch(path: string, init: RequestInit = {}, includeCreds = true) {
   const headers = new Headers(init.headers);
-  headers.set("ngrok-skip-browser-warning", "true");   // skips ngrok's interstitial page
   const creds = includeCreds ? "include" : undefined;
-  return fetch(`${path}`, {                 // prepends the base URL
-     credentials: creds,                        // sends your session cookie
+
+  let finalUrl = `${path}`;
+
+  // 🔧 FIX: Bypass ngrok warning using a query parameter for GET requests
+  // This avoids adding a custom header that forces a CORS preflight failure!
+  if (!init.method || init.method.toUpperCase() === "GET") {
+    const urlObj = new URL(finalUrl, window.location.origin);
+    urlObj.searchParams.set("ngrok-skip-browser-warning", "true");
+    finalUrl = urlObj.toString();
+  } else {
+    // For POST/PUT etc, you can keep the header if your CORS middleware allows it
+    headers.set("ngrok-skip-browser-warning", "true");
+  }
+
+  return fetch(finalUrl, {                 
+    credentials: creds,                        
     ...init,
     headers,
   });
