@@ -6,6 +6,7 @@ import JeparodyBoard from "../ui/PlayBoard/PlayJeparodyBoard";
 import RoomCreationModal from "../ui/PlayBoard/RoomCreationModal"
 import { useSocket } from "../context/SocketContext";
 import { useNavigate } from "react-router-dom";
+import { API_BASE } from "../utils/api";
 
 export default function SetupPlayBoard() {
     
@@ -63,7 +64,7 @@ export default function SetupPlayBoard() {
             //     { credentials: "include" }
             // )
             const res = await fetch(
-                `/api/boards/request_board/${slug}`, 
+                `${API_BASE}/boards/request_board/${slug}`, 
                 { credentials: "include" }
             )
             if (!res.ok) {

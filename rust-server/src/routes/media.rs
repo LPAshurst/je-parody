@@ -2,7 +2,7 @@ use axum::{Json, Router, routing::post};
 use reqwest::{StatusCode, multipart};
 use sqlx::{Pool, Postgres};
 use std::env;
-
+use crate::models::user::AuthenticatedUser;
 
 pub fn media_routes() -> Router<Pool<Postgres>> {
     Router::new()
@@ -10,6 +10,7 @@ pub fn media_routes() -> Router<Pool<Postgres>> {
 }
 
 async fn upload_image(
+    _user: AuthenticatedUser,
     headers: axum::http::HeaderMap,
     mut multipart: axum::extract::Multipart,
 ) -> Result<Json<serde_json::Value>, StatusCode> {

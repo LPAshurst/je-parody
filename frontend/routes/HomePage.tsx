@@ -4,6 +4,7 @@ import type { Board } from "../types";
 import { useSocket } from "../context/SocketContext";
 import { UseAuth } from "../context/AuthContext"
 import "../styles/HomePage.css";
+import { API_BASE } from "../utils/api";
 
 export default function HomePage() {
     const navigate = useNavigate();
@@ -22,7 +23,7 @@ export default function HomePage() {
             //     { credentials: "include" }
             // );
             const response = await fetch(
-                `/api/boards/request_user_boards`, 
+                `${API_BASE}/boards/request_user_boards`, 
                 { credentials: "include" }
             );
             

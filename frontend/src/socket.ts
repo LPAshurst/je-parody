@@ -1,13 +1,15 @@
 import { io } from 'socket.io-client';
+import { SOCKET_URL } from '../utils/api';
 
-// not needed when doing dev server
-// const URL = import.meta.env.VITE_BACKEND_BASE;
-
-export let socket = io({
+export let socket = io(SOCKET_URL, {
+  withCredentials: true,
   autoConnect: true,
   reconnection: true,
   reconnectionAttempts: 5,
   reconnectionDelay: 1000,
+  extraHeaders: {
+    "ngrok-skip-browser-warning": "true"
+  }
 });
 
 // Store current room and user info for reconnection

@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { type Clue, type Board } from '../types';
 import { useNavigate } from 'react-router-dom';
 import { useParams } from "react-router-dom";
+import { API_BASE } from '../utils/api';
 
 
 export default function useBoardSaveState(initialClues: Clue[], boardTitle: string) {
@@ -45,7 +46,7 @@ export default function useBoardSaveState(initialClues: Clue[], boardTitle: stri
             return;
         }
 
-        const res = await fetch(`/api/boards/save_full_board`, {
+        const res = await fetch(`${API_BASE}/boards/save_full_board`, {
             method: "POST",
             body: JSON.stringify(board),
             credentials: "include",

@@ -1,3 +1,5 @@
+use std::print;
+
 use crate::{extractors::optional_user::OptionalUser, models::user::{CreateAndCheckUser, User}};
 use axum::{
     Router,
@@ -10,7 +12,7 @@ use axum::{
 use bcrypt::{DEFAULT_COST, verify};
 use chrono::{Duration, Utc};
 use sqlx::{Pool, Postgres};
-use tower_cookies::{Cookie, Cookies};
+use tower_cookies::{Cookies};
 use uuid::Uuid;
 
 pub fn user_routes() -> Router<Pool<Postgres>> {
@@ -22,6 +24,7 @@ pub fn user_routes() -> Router<Pool<Postgres>> {
 
 async fn confirm_session(OptionalUser(optional_user): OptionalUser) -> (StatusCode, Json<String>) {
 
+    print!("Hello\n");
     if let Some(user) = optional_user {
         return (StatusCode::OK, Json(user.username));
     } else {
@@ -34,6 +37,8 @@ async fn login(
     cookies: Cookies,
     Json(credentials): Json<CreateAndCheckUser>,
 ) -> (StatusCode, Json<String>) {
+
+    print!("Hello u are in the login");
     let user = sqlx::query_as::<_, User>("SELECT * FROM users WHERE username = $1")
         .bind(&credentials.username)
         .fetch_optional(&pool)
@@ -62,12 +67,7 @@ async fn login(
         .await
         .unwrap();
 
-    let mut cookie = Cookie::new("session_token", session_token.to_string());
-    cookie.set_http_only(true);
-    cookie.set_path("/");
-    cookie.set_max_age(tower_cookies::cookie::time::Duration::days(7));
-
-    cookies.add(cookie);
+    cookies.add(crate::misc::cookies::session_cookie(session_token));
 
     return (
         StatusCode::CREATED,
@@ -105,12 +105,7 @@ async fn signup(
             .await
             .unwrap();
 
-            let mut cookie = Cookie::new("session_token", session_token.to_string());
-            cookie.set_http_only(true);
-            cookie.set_path("/");
-            cookie.set_max_age(tower_cookies::cookie::time::Duration::days(7));
-
-            cookies.add(cookie);
+            cookies.add(crate::misc::cookies::session_cookie(session_token));
             (
                 StatusCode::CREATED,
                 Json(new_user.username), // give the user their username back : D,

@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import "../styles/EditBoard/BoardToolbar.css"
 import useBoardSaveState from "../hooks/useBoardSaveState";
 import { useNavigate } from "react-router-dom";
+import { API_BASE } from "../utils/api";
 
 export default function EditBoard() {
     
@@ -39,7 +40,7 @@ export default function EditBoard() {
             // )
 
             const res = await fetch(
-                `/api/boards/request_board/${slug}`, 
+                `${API_BASE}/boards/request_board/${slug}`, 
                 { credentials: "include" }
             )
 
@@ -59,7 +60,7 @@ export default function EditBoard() {
     async function getRandomBoard() {
         // const res = await fetch(`${import.meta.env.VITE_BACKEND_BOARD_API}/random_board`);
 
-        const res = await fetch(`/api/boards/random_board`);
+        const res = await fetch(`${API_BASE}/boards/random_board`);
 
         if (!res.ok) {
             return;

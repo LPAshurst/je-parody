@@ -9,6 +9,7 @@ use tokio;
 
 #[tokio::main]
 async fn main() {
+    
     dotenvy::dotenv().unwrap();
 
     let pool = database::new_pool().await.unwrap();

@@ -89,7 +89,7 @@ export default function TextEditor({ selectedClue, onSave, onClose }: TextEditor
                 const formData = new FormData();
                 formData.append('file', blob);
                 
-                const res = await fetch('/api/media/upload_image', { method: 'POST', body: formData });
+                const res = await fetch('${API_BASE}/media/upload_image', { method: 'POST', body: formData, credentials: "include" });
                 console.log("status:", res.status, res.url);
                 if (!res.ok) {
                     if (res.status == 413) {

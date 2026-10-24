@@ -29,11 +29,11 @@ export default function DailyDoubleModal({ onClose, clue, isAnswering, answerQue
         return "clamp(2.5rem, 5vw, 5rem)";
     };
 
-    function stripHtml(html: string): string {
-        const temp = document.createElement('div');
-        temp.innerHTML = html;
-        return temp.textContent || '';
-    }
+    // function stripHtml(html: string): string {
+    //     const temp = document.createElement('div');
+    //     temp.innerHTML = html;
+    //     return temp.textContent || '';
+    // }
 
     useEffect(() => {
         const t = setTimeout(() => setIsExpanded(true), 50);

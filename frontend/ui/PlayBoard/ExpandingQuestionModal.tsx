@@ -19,11 +19,11 @@ export default function ExpandingQuestionModal({onClose, clue, isAnswering, answ
         if (length > 100) return "clamp(2.5rem, 5vw, 5rem)";
         return "clamp(2.5rem, 5vw, 5rem)";
     };
-    function stripHtml(html: string): string {
-        const temp = document.createElement('div');
-        temp.innerHTML = html;
-        return temp.textContent || '';
-    }
+    // function stripHtml(html: string): string {
+    //     const temp = document.createElement('div');
+    //     temp.innerHTML = html;
+    //     return temp.textContent || '';
+    // }
     console.log(clue)
     useEffect(() => {
         const timer = setTimeout(() => {
