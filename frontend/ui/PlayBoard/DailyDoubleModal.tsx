@@ -29,6 +29,14 @@ export default function DailyDoubleModal({ onClose, clue, isAnswering, answerQue
         return "clamp(2.5rem, 5vw, 5rem)";
     };
 
+<<<<<<< HEAD
+=======
+    // function stripHtml(html: string): string {
+    //     const temp = document.createElement('div');
+    //     temp.innerHTML = html;
+    //     return temp.textContent || '';
+    // }
+>>>>>>> d4a1feb (addition of dumb shit)
 
     useEffect(() => {
         const t = setTimeout(() => setIsExpanded(true), 50);

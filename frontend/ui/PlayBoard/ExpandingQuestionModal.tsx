@@ -19,7 +19,15 @@ export default function ExpandingQuestionModal({onClose, clue, isAnswering, answ
         if (length > 100) return "clamp(2.5rem, 5vw, 5rem)";
         return "clamp(2.5rem, 5vw, 5rem)";
     };
+<<<<<<< HEAD
 
+=======
+    // function stripHtml(html: string): string {
+    //     const temp = document.createElement('div');
+    //     temp.innerHTML = html;
+    //     return temp.textContent || '';
+    // }
+>>>>>>> d4a1feb (addition of dumb shit)
     console.log(clue)
     useEffect(() => {
         const timer = setTimeout(() => {
