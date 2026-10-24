@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import LoadingSpinner from "../ui/common/LoadingSpinner";
-import { API_BASE } from "../utils/api";
+import { API_BASE, apiFetch } from "../utils/api";
 
 type AuthContextType = {
   isAuthenticated: boolean;
@@ -34,9 +34,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         // );
 
         //ngrok
-        const data = await fetch(
+        const data = await apiFetch(
           `${API_BASE}/user/confirm_session`,
-          { credentials: "include" }
         );
 
         const user = await data.json()

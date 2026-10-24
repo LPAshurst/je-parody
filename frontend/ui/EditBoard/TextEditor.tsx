@@ -5,6 +5,7 @@ import "../../styles/EditBoard/TextEditor.css";
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { getQuillModulesClue, getQuillModulesResponse } from '../../utils/quillConfig';
 import processClueContent from "../../utils/processClueContent";
+import { apiFetch } from '../../utils/api';
 
 interface TextEditorProps {
     selectedClue: Clue | null;
@@ -89,7 +90,7 @@ export default function TextEditor({ selectedClue, onSave, onClose }: TextEditor
                 const formData = new FormData();
                 formData.append('file', blob);
                 
-                const res = await fetch('${API_BASE}/media/upload_image', { method: 'POST', body: formData, credentials: "include" });
+                const res = await apiFetch('${API_BASE}/media/upload_image', { method: 'POST', body: formData });
                 console.log("status:", res.status, res.url);
                 if (!res.ok) {
                     if (res.status == 413) {

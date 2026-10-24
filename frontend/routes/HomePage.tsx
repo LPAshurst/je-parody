@@ -4,7 +4,7 @@ import type { Board } from "../types";
 import { useSocket } from "../context/SocketContext";
 import { UseAuth } from "../context/AuthContext"
 import "../styles/HomePage.css";
-import { API_BASE } from "../utils/api";
+import { API_BASE, apiFetch } from "../utils/api";
 
 export default function HomePage() {
     const navigate = useNavigate();
@@ -22,9 +22,8 @@ export default function HomePage() {
             //     `${import.meta.env.VITE_BACKEND_BOARD_API}/request_user_boards`, 
             //     { credentials: "include" }
             // );
-            const response = await fetch(
+            const response = await apiFetch(
                 `${API_BASE}/boards/request_user_boards`, 
-                { credentials: "include" }
             );
             
             const data: Board[] = await response.json();

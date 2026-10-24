@@ -23,7 +23,7 @@ pub fn create_router(pool: PgPool) -> Router {
         "http://192.168.1.104:4173".parse().unwrap(),
         "http://192.168.1.248:5173".parse().unwrap(),
         "http://192.168.1.248:4173".parse().unwrap(),
-        "http://jeparody.com".parse().unwrap(),
+        "https://jeparody.com".parse().unwrap(),
         "http://localhost:33351".parse().unwrap(),
         "http://192.168.1.104:33351".parse().unwrap(),
         "http://lorenzopi.local:5173".parse().unwrap(),

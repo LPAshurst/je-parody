@@ -13,3 +13,15 @@ export const SOCKET_URL: string = (() => {
   // Fall back to your explicit local Raspberry Pi / Rust backend address:
   return "http://192.168.1.104:3000"; 
 })();
+
+
+export function apiFetch(path: string, init: RequestInit = {}, includeCreds=true) {
+  const headers = new Headers(init.headers);
+  headers.set("ngrok-skip-browser-warning", "true");   // skips ngrok's interstitial page
+  const creds = includeCreds ? "include" : undefined;
+  return fetch(`${path}`, {                 // prepends the base URL
+     credentials: creds,                        // sends your session cookie
+    ...init,
+    headers,
+  });
+}

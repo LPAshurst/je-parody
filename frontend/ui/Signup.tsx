@@ -5,7 +5,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Modal  from "@mui/material/Modal";
 import { UseAuth } from "../context/AuthContext";
-import { API_BASE } from "../utils/api";
+import { API_BASE, apiFetch } from "../utils/api";
 
 interface SignupProps {
     modalType: "login" | "signup" | null;
@@ -29,10 +29,9 @@ export default function Signup({modalType, setModalType}: SignupProps) {
         //     headers: { "Content-Type": "application/json" },
         // })
 
-        const res = await fetch(`${API_BASE}/user/signup`, {
+        const res = await apiFetch(`${API_BASE}/user/signup`, {
             method: "POST",
             body: JSON.stringify({"username": user, "password": pass}),
-            credentials: "include",
             headers: { "Content-Type": "application/json" },
         })
         
