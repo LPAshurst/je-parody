@@ -124,7 +124,7 @@ async fn start_game(s: SocketRef, Data(start_game_data): Data<StartGameData>, st
     if let Some(game) = game {
         let code: String = game.code.clone();
         let _ = s.to(code.clone()).emit("navigate-to-start", &game.code).await;
-        let _ = s.within(code).emit("get-state", &game).await;
+        let _ = s.within(code).emit("get-state", &StateResponse {game: Some(game), error: None}).await;
     }
     // handle logic to probably tell user to leave the room and go back to home page
 }

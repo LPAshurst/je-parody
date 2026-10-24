@@ -20,7 +20,6 @@ function MediaOrText({
     fallbackText?: string | number;
     className?: string;
 }) {
-    console.log(processedContent.content)
     if (processedContent.content !== undefined && processedContent.content !== "") {
         return (
             <div

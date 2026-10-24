@@ -19,7 +19,12 @@ export default function ExpandingQuestionModal({onClose, clue, isAnswering, answ
         if (length > 100) return "clamp(2.5rem, 5vw, 5rem)";
         return "clamp(2.5rem, 5vw, 5rem)";
     };
-    
+    function stripHtml(html: string): string {
+        const temp = document.createElement('div');
+        temp.innerHTML = html;
+        return temp.textContent || '';
+    }
+    console.log(clue)
     useEffect(() => {
         const timer = setTimeout(() => {
             setIsExpanded(true);
@@ -72,19 +77,17 @@ export default function ExpandingQuestionModal({onClose, clue, isAnswering, answ
                 </div>
             </header>
             <div className="play-modal-content">
-                {clue.has_media ? (
-                    <div
-                        className="play-modal-clue"
-                        dangerouslySetInnerHTML={{ __html: clue.clue }}
-                    />
-                ) : (
-                    <div className="play-modal-clue" style={{ fontSize: getFontSize(clue.clue) }}>
-                        {clue.clue}
-                    </div>
-                )}
-                <div className="play-modal-response" style={{"visibility": showAnswer ? "visible" : "hidden", fontSize: getFontSize(clue.clue)}}>
-                    {clue.response}
-                </div>
+                <div
+                    className="play-modal-clue"
+                    style={{ fontSize: getFontSize(clue.clue) }}
+                    dangerouslySetInnerHTML={{ __html: clue.clue }}
+                />
+                <div className="play-modal-response" 
+                    style={{"visibility": showAnswer ? 
+                    "visible" : "hidden", 
+                    fontSize: getFontSize(clue.response)}} 
+                    dangerouslySetInnerHTML={{ __html: clue.response }} 
+                />
             </div>
         </div>
     );
