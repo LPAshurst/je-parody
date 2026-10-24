@@ -1,7 +1,7 @@
 name: Deploy frontend
 on:
   push:
-    branches: [testing-online-site]
+    branches: [main]
     paths: ["frontend/**"]
   workflow_dispatch:
 
