@@ -12,6 +12,9 @@ pub fn session_cookie(token: Uuid) -> Cookie<'static> {
     cookie.set_same_site(SameSite::None);
     // Secure(true) is strictly required by browsers if SameSite is None.
     cookie.set_secure(true); 
+    
+    // 🔒 Partitioned isolates the cookie to the GitHub Pages top-level site
+    cookie.set_partitioned(true);
 
     cookie
 }
